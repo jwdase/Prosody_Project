@@ -13,7 +13,26 @@ def get_length(path):
         return audio.info.length
     except HeaderNotFoundError as e:
         # Signal path is not valid
-        return None 
+        return None
+
+
+def ending_determinter(path):
+    '''
+    Takes a path and determines if audio files end in a .wav
+    or a .mp3 and then uses that to figure out which to used
+    '''
+
+    last_element = path.split('/')[-1]
+
+    if any(ext in last_element for ext in ['.wav', '.mp3']):
+        return ''
+
+    try:
+        audio = File(path + '.mp3')
+        return '.mp3'
+    except HeaderNotFoundError as e:
+        return '.wav'
+
     
 def language_path_builder(df, language):
     '''
@@ -25,12 +44,12 @@ def language_path_builder(df, language):
     assert language in {'en', 'it'}
 
     root = str(Path(__file__).resolve().parents[3])
+    path = f'{root}/data/{language}/clips/'
 
-    if language == 'en':
-        return (root + '/data/' + language + '/clips/' + path + '.mp3' for path in df['path'])
-    if language == 'it':
-        return (root + '/data/' + language + '/clips/' + path for path in df['path'])
-    
+    ending = ending_determinter(path + list(df['path'])[0])
+
+    return (path + file + ending for file in df['path'])
+
 
 def valid_paths(df, length, delta, language):
     '''
