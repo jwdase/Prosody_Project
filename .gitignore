@@ -1,0 +1,12 @@
+# Large raw data
+data/                 # everything under data/
+
+# Model checkpoints & other binary weights
+*.pth                 # PyTorch
+*.pt                  # alternate extension
+*.h5 *.ckpt           # Keras / Lightning
+
+# Any oversize tab-separated datasets
+*.tsv
+*.mp3
+*.wav
