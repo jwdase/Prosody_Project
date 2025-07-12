@@ -1,0 +1,22 @@
+Running on node094
+Using Python from: /om2/user/jwdase/miniconda3/envs/torchgpu/bin/python
+Conda env: torchgpu
+Finished reading: en
+Finished reading: it
+Finished reading: es
+Finished reading: de
+Language: en, Use: train, Data Size: 8000
+Language: en, Use: test, Data Size: 1000
+Language: en, Use: validation, Data Size: 1000
+Completed en with this path: /om2/user/moshepol/prosody/data/raw_audio/en/spect/validation/range_5_5-6_0/
+Language: it, Use: train, Data Size: 8000
+Language: it, Use: test, Data Size: 1000
+Language: it, Use: validation, Data Size: 1000
+Completed it with this path: /om2/user/moshepol/prosody/data/raw_audio/it/spect/validation/range_5_5-6_0/
+Language: es, Use: train, Data Size: 8000
+Language: es, Use: test, Data Size: 1000
+Language: es, Use: validation, Data Size: 1000
+Completed es with this path: /om2/user/moshepol/prosody/data/raw_audio/es/spect/validation/range_5_5-6_0/
+Language: de, Use: train, Data Size: 8000
+Language: de, Use: test, Data Size: 1000
+Language: de, Use: validation, Data Size: 1000

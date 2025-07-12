@@ -24,6 +24,9 @@ import torchaudio
 from langaugedetection.data.length_df_tools import select_array
 from langaugedetection.data.spectrogram import parse
 
+LENGTH = 5.5 # Length of Audio Files in Seconds
+WINDOW = "5.5 - 6.0" # Specifies Window Size
+
 
 def select_language_time(languages, window):
     """
@@ -112,10 +115,10 @@ def save_files(spectrograms, path, batch_size, i):
 
 
 class AudioFileDataset(Dataset):
-    def __init__(self, audio_dir, max_time=5.5, sr=16_000):
+    def __init__(self, audio_dir, sr, max_time=LENGTH):
         self.files = list(audio_dir)
         self.target_sr = sr
-        self.length = max_time * sr
+        self.length = int(max_time * sr)
         self.samplers = {}
 
     def __len__(self):
@@ -156,7 +159,7 @@ def collate_fn(batch):
 
     return group
 
-def compute_spectrogram_batch(batch, window, n_fft=1024, hop_length=256):
+def compute_spectrogram_batch(batch, window, n_fft, hop_length):
     batch = batch.to('cuda')
 
     specs = torch.stft(
@@ -173,14 +176,16 @@ def compute_spectrogram_batch(batch, window, n_fft=1024, hop_length=256):
     return db.cpu()  
 
 
-def lang_use_script(files, base):
+def lang_use_script(files, base, process):
     '''
     Runs the parsing code, where spectrograms are
     created and saved as batches
+
+    process to be a tuple: (sr, n_ftt, hop_length)
     '''
 
     # Creates the dataset
-    dataset = AudioFileDataset(files)
+    dataset = AudioFileDataset(files, process['sr'])
 
     # Loads the data files
     loader = DataLoader(
@@ -191,18 +196,20 @@ def lang_use_script(files, base):
         drop_last=True
     )
 
-    window = torch.hann_window(1024, device='cuda')
+    window = torch.hann_window(process['n_fft'], device='cuda')
 
     i = 0 
     for batch_waveforms in loader:
-        specs = compute_spectrogram_batch(batch_waveforms, window)
+        specs = compute_spectrogram_batch(batch_waveforms, window, process['n_fft'], process['hop_length'])
         save_files(specs, base, len(specs), i)
         i += 1
 
 
-def main(languages, window):
+def main(languages, window, audio_process):
     '''
-    Pulls the dataframes and runs the main script
+    Pulls the dataframes and runs the main script,
+
+    audio_proces is a tuple: (sr, n_ftt, hop_length)
     '''
     # Dictionary
     lang_dict = select_language_time(languages, window)
@@ -229,7 +236,7 @@ def main(languages, window):
             check_path(base)
 
             # Creates spectrogram and saves files
-            lang_use_script(data, base)
+            lang_use_script(data, base, audio_process)
 
         print(f'Completed {lang} with this path: {base}')
 
@@ -242,8 +249,19 @@ if __name__ == '__main__':
 
 
     languages = ["en", "it", "es", "de"]
-    window = "5.5 - 6.0"
+    window = WINDOW
 
-    main(languages, window)
+    n_ftt = 1024
+    hop_length = 512
+    sr = 16_000
+
+    entry = {
+        'sr' : sr, 
+        'n_fft' : n_ftt, 
+        'hop_length' : hop_length
+        }
+
+
+    main(languages, window, entry)
 
     print('Done')

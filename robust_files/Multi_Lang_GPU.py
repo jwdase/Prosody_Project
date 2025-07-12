@@ -15,6 +15,8 @@ import torch.nn as nn
 import shutil
 from pathlib import Path
 import matplotlib.pyplot as plt
+import joblib
+
 
 def grab_device():
     '''
@@ -333,6 +335,9 @@ def train_loop(model, train_loader, val_loader, num_epochs, base):
             print(f"  Validation loss: {validation_loss[-1]:.4f}")
             print(f"  Validation acc:  {validation_accuracy[-1]:.4f}")
 
+    # Deletes for cleanuo
+    del optimizer, scheduler
+
     return total_loss, validation_loss
 
 
@@ -410,12 +415,18 @@ def main(languages, window, num_epochs, base):
     print('Training Ended')
 
     plot_loss(total_loss, val_loss, base)
+    joblib.dump(encoder, "label_encoder.pkl")
 
     torch.save(model.state_dict(), f'{base}/final_model.pth')
     print('Model Saved')
+    
+    # Removes model after saved
+    del model
 
     save_test(test, base)
     print('Saved Test Values')
+
+    print(f'Location: {base}')
 
 
 

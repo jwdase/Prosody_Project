@@ -6,7 +6,7 @@
 #SBATCH --cpus-per-task=12
 #SBATCH --mem=128G
 #SBATCH --gres=gpu:RTXA6000:1
-#SBATCH --time=03:00:00
+#SBATCH --time=02:30:00
 
 # Load personal conda install
 source /om2/user/jwdase/miniconda3/etc/profile.d/conda.sh
@@ -25,4 +25,4 @@ echo "Using Python from: $(which python)"
 echo "Conda env: $CONDA_DEFAULT_ENV"
 
 # Run the Python script from the parent directory
-python -u testing_fourier_transform.py
+python -u Multi_Lang_GPU.py
