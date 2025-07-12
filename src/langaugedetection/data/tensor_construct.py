@@ -13,7 +13,7 @@ def build_tensor(data):
     tensor = torch.tensor(np_array, dtype=torch.float32)
 
     # Normalize
-    return (tensor + 80) / 80
+    return tensor
 
 def split_dataset(df, train):
     '''

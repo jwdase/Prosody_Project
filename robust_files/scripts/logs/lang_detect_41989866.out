@@ -1,0 +1,78 @@
+Running on node094
+Using Python from: /om2/user/jwdase/miniconda3/envs/torchgpu/bin/python
+Conda env: torchgpu
+Using Cuda
+Folder Generated
+Classes: ['de' 'en' 'es' 'it']
+Encoder Made
+Data Loaded
+train has mean: 2.919696271419525e-07, std: 0.9995527863502502
+test has mean: -0.008504882454872131, std: 1.0046874731779099
+validation has mean: -0.0015360640827566385, std: 1.0031339526176453
+Normalized Tensors
+Data Loaders Constructed
+Model Formed
+Training Begun
+Epoch [1/75]
+  Train loss:      1.6737
+  Validation loss: 1.3373
+  Validation acc:  0.3256
+Epoch [6/75]
+  Train loss:      1.0983
+  Validation loss: 1.0051
+  Validation acc:  0.5948
+Epoch [11/75]
+  Train loss:      0.8837
+  Validation loss: 0.7458
+  Validation acc:  0.7019
+Epoch [16/75]
+  Train loss:      0.7269
+  Validation loss: 0.5467
+  Validation acc:  0.8233
+Epoch [21/75]
+  Train loss:      0.5514
+  Validation loss: 0.2693
+  Validation acc:  0.9013
+Epoch [26/75]
+  Train loss:      0.4369
+  Validation loss: 0.2064
+  Validation acc:  0.9226
+Epoch [31/75]
+  Train loss:      0.4140
+  Validation loss: 0.1553
+  Validation acc:  0.9562
+Epoch [36/75]
+  Train loss:      0.3877
+  Validation loss: 0.1202
+  Validation acc:  0.9687
+Epoch [41/75]
+  Train loss:      0.5005
+  Validation loss: 0.2601
+  Validation acc:  0.9213
+Epoch [46/75]
+  Train loss:      0.4696
+  Validation loss: 0.2030
+  Validation acc:  0.9285
+Epoch [51/75]
+  Train loss:      0.4525
+  Validation loss: 0.2154
+  Validation acc:  0.9341
+Epoch [56/75]
+  Train loss:      0.4587
+  Validation loss: 0.2077
+  Validation acc:  0.9334
+Epoch [61/75]
+  Train loss:      0.4500
+  Validation loss: 0.2099
+  Validation acc:  0.9345
+Epoch [66/75]
+  Train loss:      0.4583
+  Validation loss: 0.2082
+  Validation acc:  0.9342
+Epoch [71/75]
+  Train loss:      0.4566
+  Validation loss: 0.2082
+  Validation acc:  0.9351
+Training Ended
+Model Saved
+Saved Test Values

@@ -7,9 +7,9 @@ def open_files(language, size = None):
     paths to files, also includes speaker id
     '''
 
-    root = Path(__file__).resolve().parents[3]
+    root = '/om2/user/moshepol/prosody/data/raw_audio'
      
-    path = (f'{root}/data/{language}/validated.tsv')
+    path = (f'{root}/{language}/validated.tsv')
     dataframe = pd.read_csv(path, sep = '\t', low_memory = False)[['client_id', 'path']]
 
     print(f'Loading {language} from: {path}')

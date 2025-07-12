@@ -1,0 +1,23 @@
+Running on node064
+Using Python from: /home/jwdase/miniconda3/envs/landD/bin/python
+Conda env: landD
+Loading de from: /om2/user/moshepol/prosody/data/raw_audio/de/validated.tsv
+Loading en from: /om2/user/moshepol/prosody/data/raw_audio/en/validated.tsv
+Loading es from: /om2/user/moshepol/prosody/data/raw_audio/es/validated.tsv
+Loading it from: /om2/user/moshepol/prosody/data/raw_audio/it/validated.tsv
+Unique de speakers: 11197
+Unique en speakers: 28229
+Unique es speakers: 12074
+Unique it speakers: 6144
+Language: de complete
+Language: en complete
+Language: es complete
+Language: it complete
+Language: de with 11197 speakers
+Language: en with 28229 speakers
+Language: es with 12074 speakers
+Language: it with 6144 speakers
+Language: de, Training: 3793, Testing: 967
+Language: en, Training: 2401, Testing: 592
+Language: es, Training: 4464, Testing: 1086
+Language: it, Training: 3226, Testing: 772

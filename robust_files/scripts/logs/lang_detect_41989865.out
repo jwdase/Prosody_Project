@@ -1,0 +1,22 @@
+Running on node094
+Using Python from: /om2/user/jwdase/miniconda3/envs/torchgpu/bin/python
+Conda env: torchgpu
+Using Cuda
+Folder Generated
+Classes: ['de' 'en' 'es' 'it']
+Encoder Made
+Data Loaded
+train has mean: 1.414446160197258e-07, std: 0.9995378702878952
+test has mean: -0.010056963074021041, std: 1.0107811391353607
+validation has mean: -0.010308403987437487, std: 1.004185989499092
+Normalized Tensors
+Data Loaders Constructed
+Model Formed
+Training Begun
+Epoch [1/1]
+  Train loss:      4.8722
+  Validation loss: 1.4267
+  Validation acc:  0.2674
+Training Ended
+Model Saved
+Saved Test Values

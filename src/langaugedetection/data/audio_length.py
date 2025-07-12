@@ -1,5 +1,5 @@
 from mutagen import File
-from mutagen.mp3 import HeaderNotFoundError
+from mutagen.mp3 import HeaderNotFoundError, MutagenError
 import random
 from pathlib import Path
 
@@ -11,7 +11,7 @@ def get_length(path):
     try:
         audio = File(path)
         return audio.info.length
-    except HeaderNotFoundError as e:
+    except MutagenError as e:
         # Signal path is not valid
         return None
 
@@ -30,7 +30,7 @@ def ending_determinter(path):
     try:
         audio = File(path + '.mp3')
         return '.mp3'
-    except HeaderNotFoundError as e:
+    except MutagenError as e:
         return '.wav'
 
     
@@ -41,10 +41,8 @@ def language_path_builder(df, language):
     correct one
     '''
 
-    assert language in {'en', 'it'}
-
-    root = str(Path(__file__).resolve().parents[3])
-    path = f'{root}/data/{language}/clips/'
+    root = '/om2/user/moshepol/prosody/data/raw_audio'
+    path = f'{root}/{language}/clips/'
 
     ending = ending_determinter(path + list(df['path'])[0])
 
@@ -61,16 +59,54 @@ def valid_paths(df, length, delta, language):
 
     options = []
 
+    count = 0
+
     for path in paths:
         file_len = get_length(path)
 
         if file_len is None:
+            count += 1
             continue
 
         if length - delta <= file_len <= length:
             options.append(path)
     
     return options
+
+
+def df_values(df, language):
+    '''
+    Takes in an df that contains all the common voice audio
+    files for a repective speaker, and returns them segmented
+    into a dictionary
+
+    dict_key : length
+    dict_item : list of urls
+    '''
+
+    # bins we will sort it into, cannot refactor it
+    BIN_NUM = 20
+    BINS = [val / 2 for val in range(BIN_NUM)]
+
+    bins = {f'{val} - {val + .5}'  : [] for val in BINS}
+    keys = list(bins.keys())
+
+    for url in language_path_builder(df, language):
+        length = get_length(url)
+
+        if length is None:
+            continue
+        
+        # inserts it into correct index
+        i = 0
+        while i < BIN_NUM - 2 and length > BINS[i]:
+            i += 1
+
+        # inserts value
+        bins[keys[i]].append(url)
+
+    return bins
+
 
 
 def random_audio(files, choices):
