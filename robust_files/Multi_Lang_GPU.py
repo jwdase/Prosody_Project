@@ -43,7 +43,7 @@ def load_audio(languages, window):
     key: ['train']
     value: dict (key: lang, item: tensors)
     '''
-    data_types = ['train', 'test', 'validation']
+    data_types = ['train', 'test', 'val']
 
     # Create the array which saves data-values
     # References allows us to manually verify the audio is 
@@ -175,7 +175,7 @@ def build_loaders(tensors, batch_size=64, num_workers=1):
 
     train = ConcatDataset(tensors['train'])
     test = ConcatDataset(tensors['test'])
-    validation = ConcatDataset(tensors['validation'])
+    validation = ConcatDataset(tensors['val'])
 
     train_loader = load_data(train, True)
     test_loader = load_data(test, False)
@@ -185,20 +185,12 @@ def build_loaders(tensors, batch_size=64, num_workers=1):
 
 
 class LanguageDetector(nn.Module):
-    def __init__(self, num_classes, middle_neuron):
+    def __init__(self, num_classes, input_shape):
         super().__init__()
 
         # Convolution Layers
         self.conv1 = nn.Conv2d(1, 16, kernel_size=3, padding=1)
         self.conv2 = nn.Conv2d(16, 32, kernel_size=3, padding=1)
-
-        # Con1: (513, 344) --> (256, 172)
-        # Con2: (256, 172) --> (128, 86)
-
-        # Neuron Layers
-        self.fc1 = nn.Linear(int(middle_neuron * 32 * (1/2)**4), 1024)
-        self.fc2 = nn.Linear(1024, 128)
-        self.fc3 = nn.Linear(128, num_classes)
 
         # Normalize Layers
         self.bn1 = nn.BatchNorm2d(16)
@@ -208,6 +200,21 @@ class LanguageDetector(nn.Module):
         self.relu = nn.ReLU()
         self.pool = nn.MaxPool2d(kernel_size=2)
         self.dropout = nn.Dropout(p=.3)
+
+        with torch.no_grad():
+            dummy = torch.zeros(1, 1, *input_shape)
+            out = self.pool(self.relu(self.conv1(dummy)))
+            out = self.pool(self.relu(self.conv2(out)))
+            flat_dim = out.view(1, -1).shape[1]
+
+        # Con1: (513, 344) --> (256, 172)
+        # Con2: (256, 172) --> (128, 86)
+
+        # Neuron Layers
+        self.fc1 = nn.Linear(flat_dim, 1024)
+        self.fc2 = nn.Linear(1024, 128)
+        self.fc3 = nn.Linear(128, num_classes)
+
 
     def forward(self, x):
 
@@ -363,8 +370,8 @@ def save_test(test_loader, base):
     Saves the test data for data validation later
     '''
     for i, (inputs, outputs) in enumerate(test_loader):
-        torch.save(inputs, f'{base}inputs_{i}.pt')
-        torch.save(outputs, f'{base}outputs_{i}.pt')
+        torch.save(inputs, f'{base}/inputs_{i}.pt')
+        torch.save(outputs, f'{base}/outputs_{i}.pt')
 
 
 def check_path(base):
@@ -406,8 +413,7 @@ def main(languages, window, num_epochs, base):
     train, test, val = build_loaders(new_tensors, batch_size=256, num_workers=8)
     print('Data Loaders Constructed')
 
-    middle_neuron = calc_middle_neuron(reference)
-    model = LanguageDetector(len(languages), middle_neuron)
+    model = LanguageDetector(len(languages), tuple(reference['train']['en'].shape))
     print('Model Formed')
 
     print('Training Begun')
@@ -415,7 +421,7 @@ def main(languages, window, num_epochs, base):
     print('Training Ended')
 
     plot_loss(total_loss, val_loss, base)
-    joblib.dump(encoder, "label_encoder.pkl")
+    joblib.dump(encoder, f"{base}label_encoder.pkl")
 
     torch.save(model.state_dict(), f'{base}/final_model.pth')
     print('Model Saved')
@@ -433,9 +439,14 @@ def main(languages, window, num_epochs, base):
 if __name__ == '__main__':
     languages = ['en', 'es', 'it', 'de']
     window = 'range_5_5-6_0'
-    num_epochs = 35
+    # num_epochs = 2
 
 
-    base = '/om2/user/moshepol/prosody/models/n_fft=1024_hop_length=256/'
+    # base = '/om2/user/moshepol/prosody/models/n_fft=1024_hop_length=256/'
 
-    main(languages, window, num_epochs, base)
+    # main(languages, window, num_epochs, base)
+
+    # tensors, reference = load_audio(languages, window)
+    # model = LanguageDetector(len(languages), tuple(reference['train']['en'].shape))
+
+    # print(tuple(reference['train']['en'].shape))

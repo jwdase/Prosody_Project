@@ -58,21 +58,15 @@ def train_test_val_split(lang_dict):
     10% validation
     """
 
-    max_length = 1_000_000_000
+    x = 1_000_000_000
 
-    for lang, item in lang_dict.items():
-        max_length = min(max_length, len(item))
+    max_size = {'train' : x, 'test' : x, 'val' : x}
 
-    partition = (max_length // 1_000) * 1_000
+    for lang, dataset in lang_dict.items():
+        for dtype, data in dataset.items():
+            max_size[dtype] = min(max_size[dtype], len(data))
 
-    # Overide, Make sure to remove when submitting it
-    partition = 10_000
-
-    train = int(partition * 0.8)
-    test = int(partition * 0.1)
-
-    return train, train + test, train + test * 2
-
+    return max_size
 
 def check_path(base):
     """
@@ -86,21 +80,6 @@ def check_path(base):
         shutil.rmtree(base)
 
     folder.mkdir(exist_ok=True, parents=True)
-
-
-def split_dataset(files, train, test, val):
-    """
-    Splits the dataset into it's train, test, val
-    """
-
-    # Takes the data randomly
-    data = np.random.choice(files, size=(train + test + val), replace=False)
-
-    train_files = data[0:train]
-    test_files = data[train:test]
-    validation_files = data[test:val]
-
-    return train_files, test_files, validation_files
 
 
 def save_files(spectrograms, path, batch_size, i):
@@ -173,7 +152,7 @@ def compute_spectrogram_batch(batch, window, n_fft, hop_length):
     power = specs.abs() ** 2
     db = 10 * torch.log10(torch.clamp(power, min=1e-10))
 
-    return db.cpu()  
+    return db.cpu()
 
 
 def lang_use_script(files, base, process):
@@ -216,27 +195,26 @@ def main(languages, window, audio_process):
 
     # Folder Name, Placement of datasets
     placement = "range_" + window.replace(".", "_").replace(" ", "")
-    data_names = ("train", "test", "validation")
 
-    # Specifies indices for each split
-    split = train_test_val_split(lang_dict)
+    sizes = train_test_val_split(lang_dict)
+    print(sizes)
 
-
-    for lang, files in lang_dict.items():
-        datasets = {
-            data_type : data
-            for data_type, data in zip(data_names, split_dataset(files, *split))
-        }
-
+    for lang, datasets in lang_dict.items():
         for use, data in datasets.items():
-            print(f'Language: {lang}, Use: {use}, Data Size: {len(data)}')
-
             # Ensure directory is working
             base = base = f"/om2/user/moshepol/prosody/data/raw_audio/{lang}/spect/{use}/{placement}/"
             check_path(base)
 
+            # Clip to Maximum Size
+            file_num = (sizes[use] // 100) * 100
+
+            print(f'Language: {lang}, Use: {use}, Data Size: {file_num}')
+
+            # Randomly select from files
+            inputs = np.random.choice(data, size=file_num, replace=False)
+
             # Creates spectrogram and saves files
-            lang_use_script(data, base, audio_process)
+            lang_use_script(inputs, base, audio_process)
 
         print(f'Completed {lang} with this path: {base}')
 

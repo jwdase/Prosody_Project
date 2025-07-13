@@ -6,7 +6,7 @@
 #SBATCH --cpus-per-task=12
 #SBATCH --mem=128G
 #SBATCH --gres=gpu:RTXA6000:1
-#SBATCH --time=03:00:00
+#SBATCH --time=06:00:00
 
 # Load personal conda install
 source /om2/user/jwdase/miniconda3/etc/profile.d/conda.sh

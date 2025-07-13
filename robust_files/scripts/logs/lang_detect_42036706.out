@@ -20,3 +20,194 @@ Completed es with this path: /om2/user/moshepol/prosody/data/raw_audio/es/spect/
 Language: de, Use: train, Data Size: 8000
 Language: de, Use: test, Data Size: 1000
 Language: de, Use: validation, Data Size: 1000
+Completed de with this path: /om2/user/moshepol/prosody/data/raw_audio/de/spect/validation/range_5_5-6_0/
+Using Cuda
+Folder Generated
+Classes: ['de' 'en' 'es' 'it']
+Encoder Made
+Data Loaded
+train has mean: -1.1455267667770386e-07, std: 0.9996361285448074
+test has mean: -0.0030286808614619076, std: 0.9916126579046249
+validation has mean: 0.008732868183869869, std: 0.9974994659423828
+Normalized Tensors
+Data Loaders Constructed
+Model Formed
+Training Begun
+Epoch [1/25]
+  Train loss:      1.7272
+  Validation loss: 1.3428
+  Validation acc:  0.2712
+Epoch [6/25]
+  Train loss:      1.1096
+  Validation loss: 1.0525
+  Validation acc:  0.5424
+Epoch [11/25]
+  Train loss:      0.9493
+  Validation loss: 0.9173
+  Validation acc:  0.6186
+Epoch [16/25]
+  Train loss:      0.8247
+  Validation loss: 1.0111
+  Validation acc:  0.5628
+Epoch [21/25]
+  Train loss:      0.6584
+  Validation loss: 0.9117
+  Validation acc:  0.6473
+Training Ended
+Model Saved
+Saved Test Values
+Location: /om2/user/moshepol/prosody/models/sr=16000n_fft=2048hop_length=512
+|===========================================================================|
+|                  PyTorch CUDA memory summary, device ID 0                 |
+|---------------------------------------------------------------------------|
+|            CUDA OOMs: 0            |        cudaMalloc retries: 0         |
+|===========================================================================|
+|        Metric         | Cur Usage  | Peak Usage | Tot Alloc  | Tot Freed  |
+|---------------------------------------------------------------------------|
+| Allocated memory      |  16640 KiB |  18771 MiB | 108389 GiB | 108389 GiB |
+|       from large pool |  16640 KiB |  18769 MiB | 108352 GiB | 108352 GiB |
+|       from small pool |      0 KiB |      5 MiB |     36 GiB |     36 GiB |
+|---------------------------------------------------------------------------|
+| Active memory         |  16640 KiB |  18771 MiB | 108389 GiB | 108389 GiB |
+|       from large pool |  16640 KiB |  18769 MiB | 108352 GiB | 108352 GiB |
+|       from small pool |      0 KiB |      5 MiB |     36 GiB |     36 GiB |
+|---------------------------------------------------------------------------|
+| Requested memory      |  16640 KiB |  18771 MiB | 108385 GiB | 108385 GiB |
+|       from large pool |  16640 KiB |  18769 MiB | 108348 GiB | 108348 GiB |
+|       from small pool |      0 KiB |      5 MiB |     36 GiB |     36 GiB |
+|---------------------------------------------------------------------------|
+| GPU reserved memory   |  45056 KiB |  21962 MiB |  21962 MiB |  21918 MiB |
+|       from large pool |  45056 KiB |  21954 MiB |  21954 MiB |  21910 MiB |
+|       from small pool |      0 KiB |      8 MiB |      8 MiB |      8 MiB |
+|---------------------------------------------------------------------------|
+| Non-releasable memory |  28416 KiB |   4176 MiB |  32647 GiB |  32647 GiB |
+|       from large pool |  28416 KiB |   4170 MiB |  32610 GiB |  32610 GiB |
+|       from small pool |      0 KiB |      5 MiB |     37 GiB |     37 GiB |
+|---------------------------------------------------------------------------|
+| Allocations           |       2    |      91    |  280506    |  280504    |
+|       from large pool |       2    |      16    |   78849    |   78847    |
+|       from small pool |       0    |      76    |  201657    |  201657    |
+|---------------------------------------------------------------------------|
+| Active allocs         |       2    |      91    |  280506    |  280504    |
+|       from large pool |       2    |      16    |   78849    |   78847    |
+|       from small pool |       0    |      76    |  201657    |  201657    |
+|---------------------------------------------------------------------------|
+| GPU reserved segments |       1    |      20    |      20    |      19    |
+|       from large pool |       1    |      16    |      16    |      15    |
+|       from small pool |       0    |       4    |       4    |       4    |
+|---------------------------------------------------------------------------|
+| Non-releasable allocs |       1    |      23    |  136592    |  136591    |
+|       from large pool |       1    |       9    |   58278    |   58277    |
+|       from small pool |       0    |      15    |   78314    |   78314    |
+|---------------------------------------------------------------------------|
+| Oversize allocations  |       0    |       0    |       0    |       0    |
+|---------------------------------------------------------------------------|
+| Oversize GPU segments |       0    |       0    |       0    |       0    |
+|===========================================================================|
+
+old_parameters: {'sr': 16000, 'n_fft': 2048, 'hop_length': 512}
+Finished reading: en
+Finished reading: it
+Finished reading: es
+Finished reading: de
+Language: en, Use: train, Data Size: 8000
+Language: en, Use: test, Data Size: 1000
+Language: en, Use: validation, Data Size: 1000
+Completed en with this path: /om2/user/moshepol/prosody/data/raw_audio/en/spect/validation/range_5_5-6_0/
+Language: it, Use: train, Data Size: 8000
+Language: it, Use: test, Data Size: 1000
+Language: it, Use: validation, Data Size: 1000
+Completed it with this path: /om2/user/moshepol/prosody/data/raw_audio/it/spect/validation/range_5_5-6_0/
+Language: es, Use: train, Data Size: 8000
+Language: es, Use: test, Data Size: 1000
+Language: es, Use: validation, Data Size: 1000
+Completed es with this path: /om2/user/moshepol/prosody/data/raw_audio/es/spect/validation/range_5_5-6_0/
+Language: de, Use: train, Data Size: 8000
+Language: de, Use: test, Data Size: 1000
+Language: de, Use: validation, Data Size: 1000
+Completed de with this path: /om2/user/moshepol/prosody/data/raw_audio/de/spect/validation/range_5_5-6_0/
+Using Cuda
+Folder Generated
+Classes: ['de' 'en' 'es' 'it']
+Encoder Made
+Data Loaded
+train has mean: -1.8905848264694214e-07, std: 0.9997067004442215
+test has mean: -0.001711239863652736, std: 0.9959331005811691
+validation has mean: -0.007658820599317551, std: 1.0014019310474396
+Normalized Tensors
+Data Loaders Constructed
+Model Formed
+Training Begun
+Epoch [1/25]
+  Train loss:      2.5200
+  Validation loss: 1.3505
+  Validation acc:  0.3460
+Epoch [6/25]
+  Train loss:      1.1504
+  Validation loss: 1.0873
+  Validation acc:  0.5201
+Epoch [11/25]
+  Train loss:      1.0279
+  Validation loss: 1.0089
+  Validation acc:  0.5876
+Epoch [16/25]
+  Train loss:      0.8870
+  Validation loss: 1.0133
+  Validation acc:  0.5611
+Epoch [21/25]
+  Train loss:      0.7093
+  Validation loss: 0.9411
+  Validation acc:  0.6164
+Training Ended
+Model Saved
+Saved Test Values
+Location: /om2/user/moshepol/prosody/models/sr=16000n_fft=2048hop_length=256
+|===========================================================================|
+|                  PyTorch CUDA memory summary, device ID 0                 |
+|---------------------------------------------------------------------------|
+|            CUDA OOMs: 0            |        cudaMalloc retries: 1         |
+|===========================================================================|
+|        Metric         | Cur Usage  | Peak Usage | Tot Alloc  | Tot Freed  |
+|---------------------------------------------------------------------------|
+| Allocated memory      |  16640 KiB |  37526 MiB | 325108 GiB | 325108 GiB |
+|       from large pool |  16640 KiB |  37524 MiB | 325033 GiB | 325033 GiB |
+|       from small pool |      0 KiB |      5 MiB |     74 GiB |     74 GiB |
+|---------------------------------------------------------------------------|
+| Active memory         |  16640 KiB |  37526 MiB | 325108 GiB | 325108 GiB |
+|       from large pool |  16640 KiB |  37524 MiB | 325033 GiB | 325033 GiB |
+|       from small pool |      0 KiB |      5 MiB |     74 GiB |     74 GiB |
+|---------------------------------------------------------------------------|
+| Requested memory      |  16640 KiB |  37525 MiB | 325092 GiB | 325092 GiB |
+|       from large pool |  16640 KiB |  37523 MiB | 325017 GiB | 325017 GiB |
+|       from small pool |      0 KiB |      5 MiB |     74 GiB |     74 GiB |
+|---------------------------------------------------------------------------|
+| GPU reserved memory   |  45056 KiB |  43858 MiB |  74040 MiB |  73996 MiB |
+|       from large pool |  45056 KiB |  43850 MiB |  74022 MiB |  73978 MiB |
+|       from small pool |      0 KiB |      8 MiB |     18 MiB |     18 MiB |
+|---------------------------------------------------------------------------|
+| Non-releasable memory |  28416 KiB |   8303 MiB | 125646 GiB | 125646 GiB |
+|       from large pool |  28416 KiB |   8299 MiB | 125571 GiB | 125571 GiB |
+|       from small pool |      0 KiB |      5 MiB |     75 GiB |     75 GiB |
+|---------------------------------------------------------------------------|
+| Allocations           |       2    |      91    |  579610    |  579608    |
+|       from large pool |       2    |      16    |  157696    |  157694    |
+|       from small pool |       0    |      76    |  421914    |  421914    |
+|---------------------------------------------------------------------------|
+| Active allocs         |       2    |      91    |  579610    |  579608    |
+|       from large pool |       2    |      16    |  157696    |  157694    |
+|       from small pool |       0    |      76    |  421914    |  421914    |
+|---------------------------------------------------------------------------|
+| GPU reserved segments |       1    |      21    |      43    |      42    |
+|       from large pool |       1    |      17    |      34    |      33    |
+|       from small pool |       0    |       4    |       9    |       9    |
+|---------------------------------------------------------------------------|
+| Non-releasable allocs |       1    |      23    |  253491    |  253490    |
+|       from large pool |       1    |       9    |   90354    |   90353    |
+|       from small pool |       0    |      15    |  163137    |  163137    |
+|---------------------------------------------------------------------------|
+| Oversize allocations  |       0    |       0    |       0    |       0    |
+|---------------------------------------------------------------------------|
+| Oversize GPU segments |       0    |       0    |       0    |       0    |
+|===========================================================================|
+
+old_parameters: {'sr': 16000, 'n_fft': 2048, 'hop_length': 256}

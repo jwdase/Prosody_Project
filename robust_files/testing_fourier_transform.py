@@ -7,12 +7,22 @@ hop_length
 """
 
 import torch
+import psutil
+import gc
 
 from path import setup_project_root
 setup_project_root()
 
-from make_spect import main as spect_main
-from Multi_Lang_GPU import main as train_main
+def run_spect(languages, window_spect, param):
+    from make_spect import main as spect_main
+    spect_main(languages, window_spect, param)
+    del spect_main
+
+def run_train(languages, window_model, num_epochs, base):
+    from Multi_Lang_GPU import main as train_main
+    train_main(languages, window_model, num_epochs, base)
+    del train_main
+
 
 def create_options(choices):
     '''
@@ -52,23 +62,27 @@ if __name__ == '__main__':
 
     num_epochs = 25
 
-    for parameters in create_options((sr, n_fft, hop_length))[0:2]:
+    for parameters in create_options((sr, n_fft, hop_length)):
         param = {'sr' : parameters[0], 'n_fft' : parameters[1], 'hop_length' : parameters[2]}
 
         # Builds the spectrogram according to new parameters
-        spect_main(languages, window_spect, param)
+        run_spect(languages, window_spect, param)
 
         base = create_base(param)
         
         # Trains the spectrogram then saves it
-        train_main(languages, window_model, num_epochs, base)
+        run_train(languages, window_model, num_epochs, base)
 
         # Empties GPU
         torch.cuda.empty_cache()
         torch.cuda.ipc_collect()
 
+        # Empties RAM
+        gc.collect()
+
         print(torch.cuda.memory_summary())
         print(f'old_parameters: {param}')
+        print(f"CPU RAM used: {psutil.virtual_memory().used / 1e9:.2f} GB")
 
 
 
