@@ -1,3 +1,3 @@
 # Prosody Project
 
-Simple Goal: 
+Simple Goal: To create a NN that is capable of recognizing language solely through prosody 
