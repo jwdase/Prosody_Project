@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "/rdma/vast-rdma/vast-home/jwdase/projects/language-detection/robust_files/testing_fourier_transform.py", line 68, in <module>
+    run_spect(languages, window_spect, param)
+  File "/rdma/vast-rdma/vast-home/jwdase/projects/language-detection/robust_files/testing_fourier_transform.py", line 18, in run_spect
+    spect_main(languages, window_spect, param)
+TypeError: main() missing 2 required positional arguments: 'audio_process' and 'new_location'
