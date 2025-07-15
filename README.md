@@ -12,8 +12,6 @@ Prosody refers to the rhythm, stress, and intonation patterns of speech - the mu
 | **Loudness** | Overall intensity profile shaping perceived emphasis and phrasing. |
 
 
-
-
-
 ## Why is this important
+We're looking to disprove the Null Hypothesis that languages all have the same prosody using scientific evidence 
 
