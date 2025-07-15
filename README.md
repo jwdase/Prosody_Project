@@ -13,5 +13,4 @@ Prosody refers to the rhythm, stress, and intonation patterns of speech - the mu
 
 
 ## Why is this important
-We're looking to disprove the Null Hypothesis that languages all have the same prosody using scientific evidence 
-
+We're looking to disprove the Null Hypothesis that all languages have the same prosody using a NN to detect language
