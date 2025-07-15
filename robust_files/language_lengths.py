@@ -40,11 +40,10 @@ def make_into_list(name, maps):
 
     return insert
 
-def main():
+def main(language):
     '''
     Main run through of code
     '''
-    language = 'es'
     print(f'Language: {language}')
 
     # Load Language Files
@@ -72,4 +71,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    main('it')

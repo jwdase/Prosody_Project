@@ -86,7 +86,6 @@ def save_files(spectrograms, path, batch_size, i):
     """
     Code to save the files,
     """
-
     def file_name(length, num):
         return (
             "batch_" + "0" * (length - len(str(num))) + str(num) + "_" + str(batch_size)

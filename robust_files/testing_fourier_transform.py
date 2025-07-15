@@ -13,14 +13,14 @@ import gc
 from path import setup_project_root
 setup_project_root()
 
-def run_spect(languages, window_spect, param):
+def run_spect(languages, time_frame, num_speakers, audio_home, new_location):
     from make_spect import main as spect_main
-    spect_main(languages, window_spect, param)
+    spect_main(languages, time_frame, num_speakers, audio_home, new_location)
     del spect_main
 
-def run_train(languages, window_model, num_epochs, base):
+def run_train(languages, time_frame, num_epochs, data_location, new_location):
     from train_gpu import main as train_main
-    train_main(languages, window_model, num_epochs, base)
+    train_main(languages, time_frame, num_epochs, data_location, new_location)
     del train_main
 
 
@@ -59,18 +59,22 @@ if __name__ == '__main__':
     window_spect = "5.5 - 6.0"
     window_model = 'range_5_5-6_0'
 
-    num_epochs = 25
+    new_location = "/om2/user/moshepol/prosody/data/low_pass/"
+    save_location = "/om2/user/moshepol/prosody/models/"
+
+    num_epochs = 2
+    samples_per_person = 1
 
     for parameters in create_options((sr, n_fft, hop_length)):
         param = {'sr' : parameters[0], 'n_fft' : parameters[1], 'hop_length' : parameters[2]}
 
         # Builds the spectrogram according to new parameters
-        run_spect(languages, window_spect, param)
+        run_spect(languages, window_spect, samples_per_person, param, new_location)
 
         base = create_base(param)
         
         # Trains the spectrogram then saves it
-        run_train(languages, window_model, num_epochs, base)
+        run_train(languages, window_model, num_epochs, new_location, save_location)
 
         # Empties GPU
         torch.cuda.empty_cache()
