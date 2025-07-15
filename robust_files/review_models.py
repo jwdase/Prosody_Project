@@ -17,7 +17,7 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 from path import setup_project_root
 setup_project_root()
 
-from Multi_Lang_GPU import LanguageDetector
+from train_gpu import LanguageDetector
 
 
 def gather_models(base):

@@ -19,7 +19,7 @@ def run_spect(languages, window_spect, param):
     del spect_main
 
 def run_train(languages, window_model, num_epochs, base):
-    from Multi_Lang_GPU import main as train_main
+    from train_gpu import main as train_main
     train_main(languages, window_model, num_epochs, base)
     del train_main
 
@@ -42,7 +42,6 @@ def create_base(params):
     '''
     Builds the directory for this data to be stored
     subdirectory: /om2/user/moshepol/prosody/models/
-
     '''
     base = '/om2/user/moshepol/prosody/models/'
 
