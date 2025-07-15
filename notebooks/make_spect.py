@@ -57,7 +57,7 @@ def train_test_val_split(lang_dict):
 
     max_length = 1_000_000_000
 
-    for lang, item in lang_dict.items():
+    for _, item in lang_dict.items():
         max_length = min(max_length, len(item))
 
     partition = (max_length // 1_000) * 1_000
@@ -113,6 +113,11 @@ def save_files(spectrograms, path, batch_size, i):
 
 
 class AudioFileDataset(Dataset):
+    """
+    We have to use a Dataset to load the Audio signal
+    onto the GPU, then the Spectrogram computation occurs
+    on the GPU
+    """
     def __init__(self, audio_dir, length=88_000, sr=16_000):
         self.files = list(audio_dir)
         self.target_sr = sr
@@ -158,6 +163,10 @@ def collate_fn(batch):
     return group
 
 def compute_spectrogram_batch(batch, window, n_fft=1024, hop_length=256):
+    """
+    Takes a batch, moves it to a GPU and then enables
+    the GPU to create the spectrogram
+    """
     batch = batch.to('cuda')
 
     specs = torch.stft(

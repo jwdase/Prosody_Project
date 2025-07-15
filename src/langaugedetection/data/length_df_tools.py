@@ -1,4 +1,4 @@
-NUM_SPEAKERS_RECORD = 4
+import random
 
 def convert_to_list(val):
     '''
@@ -23,7 +23,7 @@ def convert_to_list(val):
     return array
 
 
-def select_array(df, key):
+def select_array(df, key, num_speaker_record):
     '''
     Returns all links that work for a certain 
     language with-in that timeframe
@@ -36,13 +36,15 @@ def select_array(df, key):
     for i, x in enumerate(df[key]):
 
         try:
-            val = convert_to_list(x)[0:NUM_SPEAKERS_RECORD]
+            val = convert_to_list(x)[0:num_speaker_record]
         except IndexError:
             val = convert_to_list(x)
 
-        if i % 10 == 0:
+        random_var = random.random() * 100
+
+        if 0 < random_var < 10:
             test_array.extend(val)
-        elif i % 10 == 1:
+        elif 30 < random_var < 40:
             validation_array.extend(val)
         else:
             train_array.extend(val)
