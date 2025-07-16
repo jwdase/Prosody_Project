@@ -24,8 +24,6 @@ setup_project_root()
 from langaugedetection.data.length_df_tools import select_array
 
 LENGTH = 5.5  # Length of Audio Files in Seconds
-WINDOW = "5.5 - 6.0"  # Specifies Window Size
-
 
 def select_language_time(languages, window, num_speakers):
     """
@@ -144,7 +142,7 @@ def collate_fn(batch):
     return group
 
 
-def compute_spectrogram_batch(batch, window, n_fft, hop_length):
+def compute_spectrogram_batch(lang, batch, window, n_fft, hop_length):
     """
     Takes a batch moves it to the GPU then gives the 
     """
@@ -164,7 +162,7 @@ def compute_spectrogram_batch(batch, window, n_fft, hop_length):
     return db.cpu()
 
 
-def lang_use_script(files, base, process):
+def lang_use_script(lang, files, base, process, spect_func):
     """
     Runs the parsing code, where spectrograms are
     created and saved as batches
@@ -184,14 +182,14 @@ def lang_use_script(files, base, process):
 
     i = 0
     for batch_waveforms in loader:
-        specs = compute_spectrogram_batch(
-            batch_waveforms, window, process["n_fft"], process["hop_length"]
+        specs = spect_func(
+            lang, batch_waveforms, window, process["n_fft"], process["hop_length"]
         )
         save_files(specs, base, len(specs), i)
         i += 1
 
 
-def main(languages, time_frame, num_speakers, audio_process, new_location):
+def main(languages, time_frame, num_speakers, audio_process, new_location, spect_func=compute_spectrogram_batch):
     """
     Pulls the dataframes and runs the main script,
 
@@ -204,7 +202,6 @@ def main(languages, time_frame, num_speakers, audio_process, new_location):
     placement = "range_" + time_frame.replace(".", "_").replace(" ", "")
 
     sizes = train_test_val_split(lang_dict)
-    print(sizes)
 
     for lang, datasets in lang_dict.items():
         for use, data in datasets.items():
@@ -221,7 +218,7 @@ def main(languages, time_frame, num_speakers, audio_process, new_location):
             inputs = np.random.choice(data, size=file_num, replace=False)
 
             # Creates spectrogram and saves files
-            lang_use_script(inputs, base, audio_process)
+            lang_use_script(lang, inputs, base, audio_process, spect_func)
 
         print(f"Completed {lang} with this path: {base}")
 
@@ -231,8 +228,8 @@ if __name__ == "__main__":
     # Overide partition if you want this to work
     # On the whole dataset
 
-    languages = ["en", "es", "de"]
-    window = WINDOW
+    languages = ["en", "es", "de", "it"]
+    window = "5.5 - 6.0"
 
     location = "/om2/user/moshepol/prosody/data/raw_audio/"
 
@@ -242,6 +239,6 @@ if __name__ == "__main__":
 
     entry = {"sr": sr, "n_fft": n_ftt, "hop_length": hop_length}
 
-    main(languages, window, 2, entry, location)
+    main(languages, window, 2, entry, location, compute_spectrogram_batch)
 
     # print("Done")
