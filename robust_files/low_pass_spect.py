@@ -13,8 +13,8 @@ from path import setup_project_root
 
 setup_project_root()
 
-from make_spect import main as spect_computation
-from make_spect import check_path
+from langaugedetection.data.spectrograms import main as make_spect
+from langaugedetection.data.spectrograms import check_path
 
 AUDIO_SAVED = "/om2/user/moshepol/prosody/data/low_pass"
 CUTOFF = 300
@@ -133,7 +133,7 @@ def main(languages, time_frame, num_speakers, audio_process, new_location):
         print(f"lang: {lang} recordings are saved: {path}")
 
     # Make the spectrograms
-    spect_computation(
+    make_spect(
         languages,
         time_frame,
         num_speakers,

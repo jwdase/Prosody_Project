@@ -18,7 +18,7 @@ if __name__ == '__main__':
     save_location = "/om2/user/moshepol/prosody/low_models/initial_model"
 
     num_epochs = 25
-    samples_per_person = 4
+    samples_per_person = 10
 
     n_ftt = 2048
     hop_length = 512
@@ -26,6 +26,6 @@ if __name__ == '__main__':
 
     entry = {"sr": sr, "n_fft": n_ftt, "hop_length": hop_length}
 
-    # make_spect(languages, window, samples_per_person, entry, new_location[:-1])
+    make_spect(languages, window, samples_per_person, entry, new_location[:-1])
     run_train(languages, window_model, num_epochs, new_location, save_location)
 
