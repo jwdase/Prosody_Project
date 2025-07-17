@@ -13,10 +13,6 @@ import torch
 from torch.utils.data import ConcatDataset, DataLoader, TensorDataset
 from torch import nn
 
-from path import setup_project_root
-
-setup_project_root()
-
 
 def grab_device():
     """
