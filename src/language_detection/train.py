@@ -49,7 +49,6 @@ def main(languages, time_frame, data_location, new_location):
 if __name__ == '__main__':
     language = ["en", "es", "de"]
     window = "range_5_5-6_0"
-    num_epoch = 2
 
     origin = '/om2/user/moshepol/prosody/data/raw_audio'
     base = '/om2/user/moshepol/prosody/models/test/'

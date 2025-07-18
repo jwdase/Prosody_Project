@@ -9,7 +9,7 @@ from path import setup_project_root
 
 setup_project_root()
 
-from langaugedetection.data.spectrograms import main as make_spect
+from langauge_detection.data.spectrograms import main as make_spect
 
 def compute_spectrogram_batch(lang, batch, window, n_fft, hop_length):
     """

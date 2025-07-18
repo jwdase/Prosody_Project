@@ -30,5 +30,19 @@ def grab_device():
     """
     assert torch.cuda.is_available(), "No GPU on Device"
 
+
 def save_model(model, loc):
     torch.save(model.state_dict(), f'{loc}/final_model.pth')
+
+
+def save_spect(spectrograms, path, batch_size, i):
+    """
+    Code to save the files,
+    """
+
+    def file_name(length, num):
+        return (
+            "batch_" + "0" * (length - len(str(num))) + str(num) + "_" + str(batch_size)
+        )
+
+    torch.save(spectrograms, Path(path + "/" + file_name(5, i) + ".pt"))
