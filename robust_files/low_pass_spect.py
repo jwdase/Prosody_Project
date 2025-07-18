@@ -13,8 +13,8 @@ from path import setup_project_root
 
 setup_project_root()
 
-from langaugedetection.data.spectrograms import main as make_spect
-from langaugedetection.data.spectrograms import check_path
+from langauge_detection.data.spectrograms import main as make_spect
+from langauge_detection.data.spectrograms import check_path
 
 AUDIO_SAVED = "/om2/user/moshepol/prosody/data/low_pass"
 CUTOFF = 300

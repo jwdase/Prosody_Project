@@ -1,3 +1,5 @@
+import torch
+
 # Device
 DEVICE = "cuda"
 
@@ -13,3 +15,9 @@ LR = 1e-4
 PATIENCE = 2
 FACTOR = .5
 THRESHOLD = 1e-4
+
+# Number of Unique Speakers
+NUM_SPEAKERS = 4
+
+# Used for making spectrograms
+WINDOW = torch.hann_window
