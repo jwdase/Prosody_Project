@@ -1,6 +1,7 @@
 from pathlib import Path
 import shutil
 import torch
+import glob
 
 
 def save_test(test_loader, base):
@@ -46,3 +47,25 @@ def save_spect(spectrograms, path, batch_size, i):
         )
 
     torch.save(spectrograms, Path(path + "/" + file_name(5, i) + ".pt"))
+
+def last_audio(path):
+    """
+    Figures out the numerical value of the last
+    file_name saved
+    """
+    try:
+        return int(
+            glob.glob(path + "/*.wav")[-1]
+            .split("/")[-1]
+            .replace(".wav", "")
+            .lstrip("0")
+        )
+    except IndexError:
+        return 0
+
+def make_name(name):
+    """
+    Creates file name
+    """
+    pad = 4 - len(str(name))
+    return pad * "0" + str(name) + ".wav"

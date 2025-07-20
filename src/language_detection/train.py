@@ -3,14 +3,14 @@ This Script makes a language detection model, it is trained
 on spectrograms which must be first created in the make_spect file
 """
 
-from utils.io import grab_device, check_path, save_test, save_model
-from model.encoder import generate_encoder, save_encoder
-from data.loader import load_tensors
-from model.network import LanguageDetector
-from model.train import train_loop
-from model.evaluate import plot_loss
+from language_detection.utils.io import grab_device, check_path, save_test, save_model
+from language_detection.model.encoder import generate_encoder, save_encoder
+from language_detection.data.loader import load_tensors
+from language_detection.model.network import CNNLanguageDetector
+from language_detection.model.train import train_loop
+from language_detection.model.evaluate import plot_loss
 
-def main(languages, time_frame, data_location, new_location):
+def main(languages, time_frame, mod, data_location, new_location):
     """
     Main training loop
     """
@@ -29,7 +29,7 @@ def main(languages, time_frame, data_location, new_location):
     )
 
     # Create the model
-    model = LanguageDetector(len(languages), shape)
+    model = mod(len(languages), shape)
 
     # Trains the Model
     total_loss, val_loss = train_loop(
@@ -53,4 +53,4 @@ if __name__ == '__main__':
     origin = '/om2/user/moshepol/prosody/data/raw_audio'
     base = '/om2/user/moshepol/prosody/models/test/'
 
-    main(language, window, origin, base)
+    main(language, window, LanguageDetector, origin, base)

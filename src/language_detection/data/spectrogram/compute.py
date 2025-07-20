@@ -34,7 +34,7 @@ def lang_use_script(lang, dataset, base, process):
     i = 0
     for batch_waveforms in loader:
         specs = process['spect_f'](
-            lang, batch_waveforms, window, process["n_fft"], process["hop_length"]
+            lang, batch_waveforms, window, process["n_fft"], process["hop_length"], process['sr'],
         )
         save_spect(specs, base, len(specs), i)
         i += 1

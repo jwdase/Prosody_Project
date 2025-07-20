@@ -21,3 +21,7 @@ NUM_SPEAKERS = 4
 
 # Used for making spectrograms
 WINDOW = torch.hann_window
+
+# Low Pass Filter, Location to save Audio
+CUTOFF = 300
+AUDIO_SAVED = "/om2/user/moshepol/prosody/data/low_pass"

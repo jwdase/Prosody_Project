@@ -10,25 +10,7 @@ from language_detection.data.spectrogram.loader import (
 )
 
 from language_detection.data.spectrogram.compute import make_spect
-
-def compute_spectrogram_batch(lang, batch, window, n_fft, hop_length):
-    """
-    Takes a batch moves it to the GPU then gives the
-    """
-    batch = batch.to("cuda")
-
-    specs = torch.stft(
-        batch.squeeze(1),
-        n_fft=n_fft,
-        hop_length=hop_length,
-        return_complex=True,
-        window=window,
-    )
-
-    power = specs.abs() ** 2
-    db = 10 * torch.log10(torch.clamp(power, min=1e-10))
-
-    return db.cpu()
+from language_detection.data.spectrogram.functions import compute_spectrogram_batch, compute_lowpass_spectrogram_batch
 
 
 def main(languages, time_frame, audio_process, new_location):
@@ -55,16 +37,16 @@ def main(languages, time_frame, audio_process, new_location):
             print(f'Completed: {lang}, Size: {samples}')
 
 if __name__ == '__main__':
-    languages = ["en", "es", "it", ""]
+    languages = ["en", "es", "it", 'de']
     window = "5.5 - 6.0"
 
-    location = "/om2/user/moshepol/prosody/data/raw_audio/"
+    location = "/om2/user/moshepol/prosody/data/low_pass/"
 
     n_ftt = 1024
     hop_length = 512
     sr = 16_000
 
-    entry = {"sr": sr, "n_fft": n_ftt, "hop_length": hop_length, "length" : 6.0, "spect_f" : compute_spectrogram_batch}
+    entry = {"sr": sr, "n_fft": n_ftt, "hop_length": hop_length, "length" : 6.0, "spect_f" : compute_lowpass_spectrogram_batch}
 
     main(languages, window, entry, location)
 

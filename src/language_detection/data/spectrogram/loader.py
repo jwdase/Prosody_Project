@@ -2,7 +2,7 @@
 import torch
 import pandas as pd
 
-from language_detection.data.length_df_tools import select_array
+from language_detection.data.csv_tools.read import select_array
 from language_detection import config
 
 def select_language_time(languages, window):
