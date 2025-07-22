@@ -35,5 +35,6 @@ def main(lang):
     print('Done')
 
 if __name__ == '__main__':
-    main('ja')
+    for val in ["ja", "nl", "ta"]:
+        main(val)
 

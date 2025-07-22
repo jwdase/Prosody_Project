@@ -17,7 +17,7 @@ FACTOR = .5
 THRESHOLD = 1e-4
 
 # Number of Unique Speakers
-NUM_SPEAKERS = 4
+NUM_SPEAKERS = 100
 
 # Used for making spectrograms
 WINDOW = torch.hann_window

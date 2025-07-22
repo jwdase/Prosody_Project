@@ -57,6 +57,4 @@ def key_length(df, key):
     and adds up all the values of that column
     '''
 
-    return len(select_array(df, key))
-
-
+    return sum([len(x) for _, x in select_array(df, key, 100).items()])
