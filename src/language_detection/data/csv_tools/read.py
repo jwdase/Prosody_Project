@@ -1,4 +1,7 @@
 import random
+import pandas as pd
+
+from language_detection import config
 
 def convert_to_list(val):
     '''
@@ -51,6 +54,7 @@ def select_array(df, key, num_speaker_record):
 
     return {'test' : test_array, 'val' : validation_array, 'train' : train_array}
 
+
 def key_length(df, key):
     '''
     Takes in a df and a certain key
@@ -58,3 +62,31 @@ def key_length(df, key):
     '''
 
     return sum([len(x) for _, x in select_array(df, key, 100).items()])
+
+def load_df(languages):
+    """
+    loads custom .csv from each respective language
+    """
+
+    lang_to_df = {}
+
+    for lang in languages:
+        lang_to_df[lang] = pd.read_csv(
+            f'{config.AUDIO_LOCATION}/{lang}/custom/length.csv'
+        )
+        print(
+            f'Loaded: {lang} from {config.AUDIO_LOCATION}/{lang}/custom/length.csv'
+            )
+    
+    return lang_to_df
+
+
+def num_speakers(languages):
+    """
+    Calculates the number of unique speakers
+    per a column
+    """
+
+    lang_to_df = load_df(languages).items()
+
+    return {lang : df.shape[0] for lang, df in lang_to_df}
