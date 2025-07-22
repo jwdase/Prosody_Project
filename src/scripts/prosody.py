@@ -7,7 +7,7 @@ from language_detection.model.network import CNNLanguageDetector, CNNRNNLanguage
 
 if __name__ == '__main__':
     languages = ["en", "es", "de", "it"]
-    window = "5.5 - 6.0"
+    window = "4.0 - 4.5"
     acess_window = "range_5_5-6_0"
 
     origin = "/om2/user/moshepol/prosody/data/low_pass/"

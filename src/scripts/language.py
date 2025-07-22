@@ -4,12 +4,12 @@ from language_detection.data.spectrogram.functions import compute_spectrogram_ba
 from language_detection.model.network import CNNLanguageDetector, CNNRNNLanguageDetector
 
 if __name__ == '__main__':
-    languages = ["en", "es", "de", "it"]
-    window = "5.5 - 6.0"
+    languages = ["en", "es", "de", "it", "ta", "nl", "ja"]
+    window = "4.0 - 4.5"
     acess_window = "range_5_5-6_0"
 
     origin = "/om2/user/moshepol/prosody/data/raw_audio/"
-    save = "/om2/user/moshepol/prosody/models/test/"
+    # save = "/om2/user/moshepol/prosody/models/test/"
 
     entry = {
         "sr" : 16_000,
@@ -23,4 +23,4 @@ if __name__ == '__main__':
     main_spect(languages, window, entry, origin)
 
     # Train Model
-    main_train(languages, acess_window, CNNRNNLanguageDetector, origin, save)
+    # main_train(languages, acess_window, CNNRNNLanguageDetector, origin, save)

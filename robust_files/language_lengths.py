@@ -11,8 +11,8 @@ from path import setup_project_root
 setup_project_root()
 
 # Module imports
-from langaugedetection.data.com_voice_dir import open_files, person_to_group
-from langaugedetection.data.audio_length import df_values
+from langauge_detection.data.com_voice_dir import open_files, person_to_group
+from langauge_detection.data.audio_length import df_values
 
 
 def make_single_string(name, maps):
