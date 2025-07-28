@@ -49,6 +49,50 @@ class CNNLanguageDetector(nn.Module):
 
         return x
 
+# class MyCNNRNN(nn.Module):
+#     def __init__(self, num_classes, input_shape):
+#         super().__init__()
+
+#         # Constants
+#         dropout = .3
+
+#         # Convolution Layers
+#         self.conv1 = nn.Conv2d(1, 16, kernel_size=3, padding=1)
+#         self.conv2 = nn.Conv2d(16, 32, kernel_size=3, padding=1)
+
+#         # Normalize Layers
+#         self.bn1 = nn.BatchNorm2d(16)
+#         self.bn2 = nn.BatchNorm2d(32)
+
+#         # Pooling Features
+#         self.relu = nn.ReLU()
+#         self.pool = nn.MaxPool2d(kernel_size=2)
+#         self.dropout = nn.Dropout(p=dropout)
+
+#         with torch.no_grad():
+#             dummy = torch.zeros(1, 1, *input_shape)
+#             out = self.pool(self.relu(self.bn1(self.conv1(dummy))))
+#             out = self.pool(self.relu(self.bn1(self.conv1(out))))
+#             _, C, Fp, Tp = out.shape
+
+#         # Fp --> Frequency pooling Dimension
+#         # Tp --> Time pooling Dimensions
+
+#         # Defining RNN
+#         self.rnn = nn.LSTM(
+#             input_size = C * Fp,
+#             hidden_size = 128,
+#             num_layers = 2,
+#             batch_first = True,
+#             bidirectional = True,
+#             dropout = dropout,
+#         )
+
+#         ## Explanation of all the features
+#         # input_size --> Says how many dimensions there are to input vectors
+#         # C * Fp
+
+#         # hidden_size --> 
 
 class CNNRNNLanguageDetector(nn.Module):
     def __init__(

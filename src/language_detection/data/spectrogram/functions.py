@@ -93,6 +93,9 @@ def choices(lang, audio, num_samples, directory, sr):
     """
     directory = f"{config.AUDIO_SAVED}/{lang}/recordings"
 
+    # Ensures Directory Exists
+    check_path(directory)
+
     saved_files = random.sample(range(audio.size(0)), num_samples)
 
     start = last_audio(directory)
