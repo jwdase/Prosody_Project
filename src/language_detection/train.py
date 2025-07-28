@@ -4,7 +4,7 @@ on spectrograms which must be first created in the make_spect file
 """
 
 from language_detection.utils.io import grab_device, check_path, save_test, save_model
-from language_detection.model.encoder import generate_encoder, save_encoder
+from language_detection.model.encoder import generate_encoder, save_encoder, CustomLabelEncoder
 from language_detection.data.loader import load_tensors
 from language_detection.model.network import CNNLanguageDetector
 from language_detection.model.train import train_loop
@@ -20,7 +20,7 @@ def main(languages, time_frame, mod, data_location, new_location):
     check_path(new_location)
 
     # Load tensors and encoders
-    encoder = generate_encoder(languages)
+    encoder = CustomLabelEncoder(languages)
     train, test, val, shape = load_tensors(
         languages,
         time_frame,
@@ -51,6 +51,6 @@ if __name__ == '__main__':
     window = "range_5_5-6_0"
 
     origin = '/om2/user/moshepol/prosody/data/raw_audio'
-    base = '/om2/user/moshepol/prosody/models/test/'
+    base = '/om2/user/moshepol/prosody/models/test/no_prosody/'
 
     main(language, window, LanguageDetector, origin, base)

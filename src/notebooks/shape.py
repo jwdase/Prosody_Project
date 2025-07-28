@@ -120,19 +120,23 @@ def select_audio(options, maximum, current):
 
     chosen_files = set()
 
-    while len(chosen_files) < config.NUM_SPEAKERS:
+    i = 0
+
+    while len(chosen_files) < config.NUM_SPEAKERS and i < config.NUM_SPEAKERS * 3:
+        print('stuck')
         frame, files = random.choices(list(options.items()), k=1, weights=weights)[0]
         file = random.choice(files)
 
         # Ensures we can add file and not repeating
         if (not check_less(file, frame, maximum, current) 
             or file in chosen_files):
+            i += 1
             continue
 
         # Adds file to x if valid
         current[frame] += 1
         chosen_files.add(file)
-
+    print('un-stuck')
     return list(chosen_files)
 
 
@@ -191,13 +195,6 @@ def create_dataset(languages):
 
 
 
-
-
-
-
-
-
-
 if __name__ == "__main__":
     lang = ["ta", "en", "es"]
     # print(smallest_lang(lang))
@@ -223,6 +220,14 @@ if __name__ == "__main__":
         "9.0 - 9.5": 3005,
         "9.5 - 10.0": 0,
     }
-    print(maximum)
+    # print(maximum)
 
-    fill_smallest("ta", maximum)
+    _, val = fill_smallest("ta", maximum)
+
+    total = 0
+
+    for key, value in val.items():
+        print(key, value)
+        total += value
+
+    print(f'Total Audio Recordings: {total}')

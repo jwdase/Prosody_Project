@@ -6,23 +6,23 @@ from language_detection.model.network import CNNLanguageDetector, CNNRNNLanguage
 
 
 if __name__ == '__main__':
-    languages = ["en", "es", "de", "it"]
+    languages = ["en", "de", "nl", "es", "it", "ja", "ta"]
     window = "4.0 - 4.5"
-    acess_window = "range_5_5-6_0"
+    acess_window = "range_4_0-4_5"
 
     origin = "/om2/user/moshepol/prosody/data/low_pass/"
-    save = "/om2/user/moshepol/prosody/models/test/"
+    save = "/om2/user/moshepol/prosody/models/test/four_lang_prosody/"
 
     entry = {
         "sr" : 16_000,
         "n_fft" : 1024,
         "hop_length" : 512,
         "spect_f" : compute_lowpass_spectrogram_batch,
-        "length" : 6.0
+        "length" : 4.5
     }
 
     # Make Spectrogram
     main_spect(languages, window, entry, origin)
-
+    
     # Train Model
     main_train(languages, acess_window, CNNRNNLanguageDetector, origin, save)

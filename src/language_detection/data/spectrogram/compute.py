@@ -5,6 +5,7 @@ from torch.utils.data import DataLoader
 from language_detection.utils.io import check_path, save_spect
 from language_detection import config
 from language_detection.data.spectrogram.dataset import AudioFileDataset
+from language_detection import config
 
 def collate_fn(batch):
     """
@@ -26,7 +27,7 @@ def lang_use_script(lang, dataset, base, process):
 
     # Loads the data files
     loader = DataLoader(
-        dataset, batch_size=128, collate_fn=collate_fn, num_workers=8, drop_last=True
+        dataset, batch_size=config.SPECT_SIZE, collate_fn=collate_fn, num_workers=8, drop_last=True
     )
 
     window = config.WINDOW(process["n_fft"], device=config.DEVICE)
