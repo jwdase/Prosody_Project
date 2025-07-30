@@ -3,6 +3,9 @@ Script to figure out our dataset distribution and then load the
 audio files for creating our spectrograms
 """
 
+import pickle
+import random
+
 from language_detection.data.csv_tools.read import (
     load_df,
     key_length,
@@ -11,9 +14,6 @@ from language_detection.data.csv_tools.read import (
 )
 
 from language_detection import config
-
-import random
-
 
 def find_sizes(languages):
     """
@@ -41,33 +41,122 @@ def smallest_lang(languages):
 
 def fill_smallest(lang, maximum):
     """
+    Fills the smallest function first
+    """
+
+    def probability_f(opt, _):
+        """
+        Returns how we want to weigh probabilities in
+        data selection, ensures weights always
+        add up to 1
+        """
+
+        weights = [config.WEIGHTS[key] for key in opt.keys()]
+        multiple = 1 / sum(weights)
+
+        return [multiple * val for val in weights]
+
+    def insert_f(files, opt):
+        """
+        Defines how we insert the file into
+        the dataset
+        """
+        x = random.choices(["train", "test", "val"], weights=[0.8, 0.15, 0.05], k=1)[0]
+        add_dict(files[x], opt)
+
+    return fill(lang, maximum, probability_f, insert_f)
+
+
+def fill_other(lang, maximum, max_dtype):
+    """
+    Fills languages besides the first language
+    """
+
+    def probability_f(opt, current):
+        """
+        Returns the priority of different keys functionis
+        1 - % full in priority
+        """
+        pecentages = []
+
+        for key, _ in opt.items():
+            try:
+                pecentages.append(max(0, 1 - current[key] / maximum[key]))
+            except ZeroDivisionError:
+                pecentages.append(0)
+
+        return pecentages
+
+    def insert_f(files, opt):
+        """
+        inserts the file into the correct dicitonary based on 
+        a threshold of sucessful entries
+        """
+
+        def check_fits(df, max_d, options):
+            """
+            Checks that the dataframe fits the available
+            space in the bins - if it doesn't then moves on
+            """
+            works = {}
+            sucess = 0
+
+            for frame, files in options.items():
+                for file in files:
+                    if len(df[frame]) < max_d[frame]:
+                        add_choosen(works, frame, file)
+
+            return works
+
+        choices = {}
+        sizes = {}
+
+        for entry in ['test','train', 'val']:
+            df = files[entry]
+            max_d = max_dtype[entry]
+            options = check_fits(df, max_d, opt)
+
+            choices[entry] = options
+            sizes[entry] = opt_size(options)
+
+        if sizes['val'] > 0:
+            add_dict(files['val'], choices['val'])
+        elif sizes['test'] > 0:
+            add_dict(files['test'], choices['test'])
+        else:
+            add_dict(files['train'], choices['train'])
+
+    return fill(lang, maximum, probability_f, insert_f)
+
+
+def fill(lang, maximum, prob_f, insert_f):
+    """
     Begins the filling process on the smallest
     language
     """
+
+    i = 0
+
     df = load_df([lang])[lang]
 
-    train_files = {key: [] for key, _ in maximum.items()}
-    test_file = {key: [] for key, _ in maximum.items()}
-    val_file = {key: [] for key, _ in maximum.items()}
+    files = {
+        dtype: {key: [] for key, _ in maximum.items()}
+        for dtype in ["train", "test", "val"]
+    }
 
     for index, row in list(df.iterrows()):
         opt = make_dict(row)
 
         if opt_size(opt) > config.NUM_SPEAKERS:
-            opt = select_audio(
-                opt, maximum, current_size(train_files, test_file, val_file)
-            )
+            # print("enter")
+            opt = select_audio(opt, maximum, current_size(files), prob_f)
 
         # Logic for choosing which dict to add
-        x = random.randint(0, 100)
-        if x <= 15:
-            add_dict(test_file, opt)
-        elif 15 <= x <= 20:
-            add_dict(train_files, opt)
-        else:
-            add_dict(val_file, opt)
+        insert_f(files, opt)
 
-    return train_files, test_file, val_file
+        i += 1
+
+    return files
 
 
 def add_dict(main, new):
@@ -79,7 +168,12 @@ def add_dict(main, new):
         main[key] += value
 
 
-def current_size(d1, d2, d3):
+def current_size(files):
+
+    d1 = files["train"]
+    d2 = files["test"]
+    d3 = files["val"]
+
     return {
         key: len(i1) + len(i2) + len(i3)
         for (key, i1), (_, i2), (_, i3) in zip(d1.items(), d2.items(), d3.items())
@@ -106,37 +200,23 @@ def make_dict(row):
             x[title] = convert_to_list(row[title])
     return x
 
+def add_choosen(dictionary, key, val):
+    """
+    Adds values to the dictionary based on it's key and
+    value
+    """
+    if key in dictionary:
+        dictionary[key].append(val)
 
-def select_audio(options, maximum, current):
+    else:
+        dictionary[key] = [val]
+
+def select_audio(options, maximum, current, prob_f):
     """
     Weighs audio file to have more longer clips
     but fills the dataset with the maximum amount of
     audio files
     """
-
-    def probability_f(opt):
-        """
-        Returns how we want to weigh probabilities in
-        data selection, ensures weights always
-        add up to 1
-        """
-
-        weights = [config.WEIGHTS[key] for key in opt.keys()]
-        multiple = 1 / sum(weights)
-
-        return [multiple * val for val in weights]
-
-    def add_choosen(dictionary, key, val):
-        """
-        Adds values to the dictionary based on it's key and
-        value
-        """
-        if key in dictionary:
-            dictionary[key].append(val)
-
-        else:
-            dictionary[key] = [val]
-
 
     def remove_opt(dictionary, key, file):
         """
@@ -148,14 +228,17 @@ def select_audio(options, maximum, current):
         if len(dictionary[key]) == 0:
             del dictionary[key]
 
-
-    weights = probability_f(options)
+    weights = prob_f(options, current)
     chosen_files = {}
 
     i = 0
     j = 0
 
-    while j < config.NUM_SPEAKERS and i < config.NUM_SPEAKERS * 3:
+    while (
+        j < config.NUM_SPEAKERS
+        and len(options) > 0
+        and all([val != 0 for val in weights])
+    ):
         frame, files = random.choices(list(options.items()), k=1, weights=weights)[0]
         file = random.choice(files)
 
@@ -163,7 +246,7 @@ def select_audio(options, maximum, current):
         remove_opt(options, frame, file)
 
         # Updates weights
-        weights = probability_f(options)
+        weights = prob_f(options, current)
 
         # Ensures we can add file and not repeating
         if not check_less(file, frame, maximum, current):
@@ -176,7 +259,6 @@ def select_audio(options, maximum, current):
 
     return chosen_files
 
-
 def check_less(val, frame, maximum, current):
     """
     Checks to make sure we can add our audio
@@ -184,75 +266,64 @@ def check_less(val, frame, maximum, current):
     """
     return maximum[frame] > current[frame] + len(val)
 
-#############-----------------------################
-
-def fill(lang, size):
-    pass
-
-
-def priority_function(options, size, current):
+def generate_max_dtype(files):
     """
-    Tell's the code which bucket to add each audio file
-    to untill all buckets are filled
+    Lists out the maximum by datastet type
     """
-    pass
+    x = {}
+
+    for dtype, data in files.items():
+        x[dtype] = {}
+        for key, value in data.items():
+            x[dtype][key] = len(value)
+
+    return x
+            
+
+#############  -----------------------  ################
 
 
 def create_dataset(languages):
     """
     Runs the majority of the code to create a
     """
-
     # Audio files will all be saved key : val
     dataset = {}
 
+    # Finds maximum, then smallest language
     maximum = find_sizes(languages)
-    smallest_language = smallest_lang(lang)
+    smallest_language = smallest_lang(languages)
+    print(f'Smallest dataset is: {smallest_language}')
 
-    audio_files, maximum = fill_smallest(smallest_language, maximum)
+    # Fills the smallest language, saves the files and 
+    # largest shape each audio file can be
+    audio_files = fill_smallest(smallest_language, maximum)
     dataset[smallest_language] = audio_files
+    maximum_size_time = generate_max_dtype(audio_files)
+    print(f'Finished: {smallest_language}')
 
+    # Fills the rest of the languages
     for lang in languages:
         if lang is smallest_language:
             continue
 
+        dataset[lang] = (
+            fill_other(lang, maximum, maximum_size_time)
+        )
+        print(f'Finished: {lang}')
+
+    return dataset
+    
+
 
 if __name__ == "__main__":
-    lang = ["ta", "en", "es"]
-    # print(smallest_lang(lang))
-    maximum = {
-        "0.0 - 0.5": 0,
-        "0.5 - 1.0": 0,
-        "1.0 - 1.5": 0,
-        "1.5 - 2.0": 6,
-        "2.0 - 2.5": 134,
-        "2.5 - 3.0": 647,
-        "3.0 - 3.5": 2048,
-        "3.5 - 4.0": 3266,
-        "4.0 - 4.5": 4245,
-        "4.5 - 5.0": 4351,
-        "5.0 - 5.5": 4070,
-        "5.5 - 6.0": 3713,
-        "6.0 - 6.5": 3318,
-        "6.5 - 7.0": 2708,
-        "7.0 - 7.5": 2452,
-        "7.5 - 8.0": 2263,
-        "8.0 - 8.5": 1868,
-        "8.5 - 9.0": 1817,
-        "9.0 - 9.5": 3005,
-        "9.5 - 10.0": 0,
-    }
-    # print(maximum)
+    lang = ["ta", "en", "es", "ja", "it", "de", "nl"]
+    
 
-    d1, d2, d3 = fill_smallest("ta", maximum)
+    x = create_dataset(lang)
 
-    total = 0
+    with open('notebooks/play/file.pkl', 'wb') as f:
+        pickle.dump(x, f)
 
-    for key, value in current_size(d1, d2, d3).items():
-        print(key, value)
-        total += value
+    
 
-    # for key, value in files.items():
-    #     print(key, value)
-
-    print(f"Total Audio Recordings: {total}")
