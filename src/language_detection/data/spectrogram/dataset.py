@@ -22,16 +22,16 @@ class AudioFileDataset(Dataset):
         path = self.files[idx]
 
         waveform, sr = torchaudio.load(path)
+        original_length = waveform.shape[-1]
 
         if sr != self.target_sr:
 
             if sr not in self.samplers:
                 self.samplers[sr] = torchaudio.transforms.Resample(sr, self.target_sr)
 
-            new_wave = self.samplers[sr](waveform)
-            return self.pad_waveform(new_wave)
+            waveform = self.samplers[sr](waveform)
 
-        return self.pad_waveform(waveform)
+        return self.pad_waveform(waveform), original_length
 
     def pad_waveform(self, waveform):
         length = waveform.shape[-1]
