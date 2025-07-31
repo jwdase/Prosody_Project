@@ -2,51 +2,61 @@
 Tools to load and compute a spectrogram on a GPU
 """
 
+import pickle
+
 import torch
 
-from language_detection.data.spectrogram.loader import (
-    select_language_time,
-    train_test_val_split,
-)
-
+from language_detection.data.spectrogram.loader import create_dataset
 from language_detection.data.spectrogram.compute import make_spect
 from language_detection.data.spectrogram.functions import compute_spectrogram_batch, compute_lowpass_spectrogram_batch
+from language_detection.data.spectrogram.tools import group_by_lang
+from language_detection.utils.io import check_path
 
 
-def main(languages, time_frame, audio_process, new_location):
+def main(languages, audio_process, new_location):
     """
-    Pulls the dataframe and makes the spectrogram
+    Pulls the dataframe and makes the spectrogram of the
+    audio files
     """
-    lang_dict = select_language_time(languages, time_frame)
 
-    # Folder Name, Placement of datasets
-    placement = "range_" + time_frame.replace(".", "_").replace(" ", "")
+    # Loads dataset by partition
+    dataset, speakers = create_dataset(languages)
 
-    sizes = train_test_val_split(lang_dict)
+    # Saves the 2 files
+    with open(f'{new_location}/dataset.pkl', 'wb') as f:
+        pickle.dump(dataset, f)
 
-    for lang, datasets in lang_dict.items():
-        for use, data in datasets.items():
+    with open(f'{new_location}/speakers.pkl', 'wb') as f:
+        pickle.dump(speakers, f)
 
-            # Ensure directory is working
-            base = base = f"{new_location}/{lang}/spect/{use}/{placement}/"
+    # Cleans array
+    dataset = group_by_lang(dataset)
 
-            samples = int((sizes[use] // 100) * 100)
+    print(f'Starting Spectrogram: {list(dataset.keys())[0]}')
+    for lang, dataset in dataset.items():
+        for use, data in dataset.items():
 
-            make_spect(lang, data, base, audio_process, samples)
-        
-            print(f'Completed: {lang}, Size: {samples}')
+            # Cleans and then writes to directory
+            base = f"{new_location}/{lang}/spect/{use}/"
+            check_path(base)
+
+            make_spect(lang, data[0:50], base, audio_process)
+
+            print(f"Finished: {use} w/ {len(data)} samples")
+
+        print(f"Finsihed: {lang}")
+
 
 if __name__ == '__main__':
-    languages = ["en", "es", "it", 'de']
-    window = "5.5 - 6.0"
+    languages = ["ta", "ja"]
 
-    location = "/om2/user/moshepol/prosody/data/low_pass/"
+    location = "/om2/user/moshepol/prosody/data/low_pass_data"
 
     n_ftt = 1024
     hop_length = 512
     sr = 16_000
 
-    entry = {"sr": sr, "n_fft": n_ftt, "hop_length": hop_length, "length" : 6.0, "spect_f" : compute_lowpass_spectrogram_batch}
+    entry = {"sr": sr, "n_fft": n_ftt, "hop_length": hop_length, "spect_f" : compute_lowpass_spectrogram_batch}
 
-    main(languages, window, entry, location)
+    main(languages, entry, location)
 

@@ -1,7 +1,7 @@
 import torch
 
 # Device
-DEVICE = "cuda"
+DEVICE = "cpu"
 
 # Data Loaders
 BATCH_SIZE = 256
@@ -18,7 +18,9 @@ THRESHOLD = 1e-4
 
 # Number of Unique Speakers
 NUM_SPEAKERS = 25
-SPECT_SIZE = 64
+SPECT_SIZE = 32
+MAX_LENGTH = 9.0
+WORKERS = 1
 
 # Used for making spectrograms
 WINDOW = torch.hann_window

@@ -1,4 +1,3 @@
-
 import random
 import glob
 
@@ -7,6 +6,7 @@ import torchaudio
 
 from language_detection import config
 from language_detection.utils.io import check_path, last_audio, make_name
+from language_detection.data.spectrogram.tools import choices
 
 def compute_spectrogram_batch(lang, batch, window, n_fft, hop_length, sr):
     """
@@ -87,19 +87,7 @@ def fft_lowpass_batch(audio, sr, cutoff):
     return audio, mask
 
 
-def choices(lang, audio, num_samples, directory, sr):
-    """
-    Saves the audio file under the directory specified
-    """
-    directory = f"{config.AUDIO_SAVED}/{lang}/recordings"
 
-    # Ensures Directory Exists
-    check_path(directory)
 
-    saved_files = random.sample(range(audio.size(0)), num_samples)
 
-    start = last_audio(directory)
 
-    for name, i in enumerate(saved_files):
-        path = f"{directory}/{make_name(start + name + 1)}"
-        torchaudio.save(path, audio[i].cpu(), sr)
