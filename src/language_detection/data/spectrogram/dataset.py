@@ -37,7 +37,9 @@ class AudioFileDataset(Dataset):
         length = waveform.shape[-1]
 
         if length > self.length:
-            raise TypeError
-
+            print('Clipped')
+            waveform = waveform[..., :self.length]
+            length = self.length 
+            
         pad = self.length - length
         return torch.nn.functional.pad(waveform, (0, pad))
