@@ -1,9 +1,12 @@
 import glob
+
 import torch
+import numpy as np
+
 from torch.utils.data import ConcatDataset, DataLoader, TensorDataset
 from language_detection import config
 
-def load_audio(lang_list, segment, orig):
+def load_audio(lang_list, orig):
     """
     Loads the audio files from the directory specified below
     stores them as a dict
@@ -20,7 +23,7 @@ def load_audio(lang_list, segment, orig):
 
     for lang in lang_list:
         for dtype in data_types:
-            base = f"{orig}/{lang}/spect/{dtype}/{segment}/"
+            base = f"{orig}/{lang}/spect/{dtype}/"
 
             paths = glob.glob(base + "*.pt")
 
@@ -30,16 +33,15 @@ def load_audio(lang_list, segment, orig):
 
             for path in paths:
                 x = torch.load(path, weights_only=False)
-
                 if first_audio:
-                    reference[dtype][lang] = x[0]
+                    reference[dtype][lang] = x['spec'][0]
                     first_audio = False
 
                 # Put Tensor on range 0 --> 1
                 spectograms_tensors.append(x)
 
             # Saves each languages tensor
-            tensors[dtype][lang] = spectograms_tensors.copy()
+            tensors[dtype][lang] = spectograms_tensors
 
     return tensors, reference
 
@@ -60,7 +62,28 @@ def standardize_tensors(tensors):
     # Normalize 'Training Data'
     for use, dataset in tensors.items():
         for lang, data in dataset.items():
-            tensors[use][lang] = [(d - mean) / std for d in data]
+            tensors[use][lang] = {'spec' : [], 'length' : []}
+
+            for d in data:
+
+                spec_x = []
+                dur_x = []
+
+                for spec, duration in zip(d['spec'], d['length']):
+
+                    # Normalize only over working audio
+                    real = (spec[..., :duration] - mean) / std
+
+                    # Puts in normalization
+                    spec[..., :duration] = real
+
+                    spec_x.append(spec)
+                    dur_x.append(duration)
+                
+                tensors[use][lang]['spec'].append(torch.stack(spec_x, dim=0))
+                tensors[use][lang]['length'].append(torch.stack(dur_x, dim=0))
+
+            print(f'Lenght of: {use}, {lang} is {len(tensors[use][lang]["spec"])}')
 
     return tensors
 
@@ -74,10 +97,13 @@ def calc_mean(tensor_list):
     sum_sq = 0.0
     count = 0
 
-    for tensor in tensor_list:  # each tensor is e.g. [64, 1025, 172]
-        sum_ += tensor.sum()
-        sum_sq += (tensor**2).sum()
-        count += tensor.numel()
+    for tensor in tensor_list:
+        for spec, duration in zip(tensor['spec'], tensor['length']):
+            file = spec[..., :duration]
+
+            sum_ += file.sum()
+            sum_sq += (file**2).sum()
+            count += 1
 
     mean = sum_ / count
     std = (sum_sq / count - mean**2).sqrt()
@@ -89,14 +115,44 @@ def print_data_mean(tensors):
     """
     Prints mean for tensors to ensure data
     is normalized
+
+    Tensor: {use : {lang : {spect : []
+                        {length : [] }}}}
     """
+
+    def calc_sub_mean(data):
+        """
+        Calculates mean and std. on data organized
+        like: 
+
+        """
+
+        sum_ = 0.0
+        sum_sq = 0.0
+        count = 0
+
+        for spec_array, length_array in zip(data['spec'], data['length']):
+            for spec, length in zip(spec_array, length_array):
+                file = spec[..., :length]
+
+                sum_ += file.sum()
+                sum_sq += (file**2).sum()
+                count += 1
+
+        mean = sum_ / count
+        std = (sum_sq / count - mean**2).sqrt()
+
+        return float(mean), float(std)
+
+
 
     for use, dataset in tensors.items():
         mean = 0.0
         std = 0.0
 
         for _, data in dataset.items():
-            mean_, std_ = calc_mean(data)
+
+            mean_, std_ = calc_sub_mean(data)
 
             mean += mean_
             std += std_
@@ -118,10 +174,12 @@ def flatten_data(tensors, encoder):
         for lang, data in dataset.items():
 
             # Calculates the number of labels to assign
-            values = len(data) * data[0].shape[0]
+            values = len(data['spec']) * data['spec'][0].shape[0]
 
             x = list(data)
             y = encoder.transform([lang] * values)
+
+            # Todo <-- Define new Dataset
 
             data_sets.append(
                 TensorDataset(torch.cat(x, dim=0), torch.tensor(y, dtype=torch.long))
@@ -153,13 +211,15 @@ def build_loaders(tensors):
     return train_loader, test_loader, validation_loader
 
 
-def load_tensors(languages, time_frame, data_location, enc):
+def load_tensors(languages, data_location, enc):
     """
     Loads the tensor data_loaders
     """
 
-    tensors, reference = load_audio(languages, time_frame, data_location)
+    tensors, reference = load_audio(languages, data_location)
     tensors = standardize_tensors(tensors)
+
+
     print_data_mean(tensors)
 
     train, test, val = build_loaders(flatten_data(tensors, enc))

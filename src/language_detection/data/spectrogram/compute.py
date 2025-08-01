@@ -41,7 +41,7 @@ def lang_use_script(lang, dataset, base, process):
         # Saves with length mapping
         files = {
             'spec' : specs,
-            'length' : batch_lengths
+            'length' : (batch_lengths - process["n_fft"]) // process['hop_length'] + 1
         }
 
         save_spect(files, base, len(specs), i)

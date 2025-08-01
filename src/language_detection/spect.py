@@ -32,15 +32,15 @@ def main(languages, audio_process, new_location):
     # Cleans array
     dataset = group_by_lang(dataset)
 
-    print(f'Starting Spectrogram: {list(dataset.keys())[0]}')
     for lang, dataset in dataset.items():
+        print(f'Starting Spectrogram: {lang}')
         for use, data in dataset.items():
 
             # Cleans and then writes to directory
             base = f"{new_location}/{lang}/spect/{use}/"
             check_path(base)
 
-            make_spect(lang, data[0:50], base, audio_process)
+            make_spect(lang, data, base, audio_process)
 
             print(f"Finished: {use} w/ {len(data)} samples")
 
