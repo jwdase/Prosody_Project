@@ -180,7 +180,7 @@ class VarCNNRNNLanguageDetector(nn.Module):
     def __init__(
         self,
         num_classes: int,
-        input_shape: tuple[int,int],    # (freq_bins, time_steps)
+        input_shape: tuple[int, int],  # (freq_bins, time_steps)
         rnn_hidden: int = 128,
         rnn_layers: int = 2,
         bidirectional: bool = True,
@@ -188,7 +188,7 @@ class VarCNNRNNLanguageDetector(nn.Module):
     ):
         super().__init__()
 
-        # 1) CNN feature extractor
+        # CNN feature extractor
         self.conv1 = nn.Conv2d(1, 16, kernel_size=3, padding=1)
         self.bn1   = nn.BatchNorm2d(16)
         self.conv2 = nn.Conv2d(16, 32, kernel_size=3, padding=1)
@@ -197,28 +197,26 @@ class VarCNNRNNLanguageDetector(nn.Module):
         self.pool  = nn.MaxPool2d(2)
         self.dropout = nn.Dropout(dropout)
 
-        # figure out size after conv/pool
+        # Determine output size after conv/pool
         with torch.no_grad():
             dummy = torch.zeros(1, 1, *input_shape)
             out = self.pool(self.relu(self.bn1(self.conv1(dummy))))
             out = self.pool(self.relu(self.bn2(self.conv2(out))))
             _, C, Fp, Tp = out.shape
 
-        self.Fp = Fp  # Save for computing new lengths later
-        self.Tp = Tp
+        self.Fp = Fp
         self.C = C
 
-        # 2) RNN
+        # RNN layer
         self.rnn = nn.LSTM(
             input_size  = C * Fp,
             hidden_size = rnn_hidden,
             num_layers  = rnn_layers,
             batch_first = True,
-            bidirectional=bidirectional,
-            dropout      = dropout if rnn_layers > 1 else 0.0
+            bidirectional = bidirectional,
+            dropout = 0.0
         )
 
-        # 3) Final classifier
         rnn_directions = 2 if bidirectional else 1
         self.classifier = nn.Sequential(
             nn.Linear(rnn_hidden * rnn_directions, 64),
@@ -229,32 +227,39 @@ class VarCNNRNNLanguageDetector(nn.Module):
 
     def forward(self, x: torch.Tensor, lengths: torch.Tensor) -> torch.Tensor:
         """
-        x: [B, 1, freq_bins, time_steps]
-        lengths: [B] — actual time steps before padding (in original input)
+        x:       [B, 1, F, T]  — padded spectrograms
+        lengths: [B]           — actual (unpadded) time steps BEFORE CNN
         """
         B = x.size(0)
 
-        # ---- CNN stack ----
+        # CNN feature extraction
         x = self.pool(self.relu(self.bn1(self.conv1(x))))
         x = self.pool(self.relu(self.bn2(self.conv2(x))))
         # x shape: [B, C, Fp, Tp]
 
-        # Update lengths (downsampled by MaxPool2d(2) twice → /4)
-        lengths = torch.div(lengths, 4, rounding_mode='trunc')
+        # Adjust lengths for CNN pooling (2x MaxPool2d(2) → total downsample by 4)
+        lengths = torch.clamp(torch.div(lengths, 4, rounding_mode='trunc'), min=1)
+        lengths = torch.clamp(lengths, min=1)  # 👈 ensures no zero-length
 
-        # ---- reshape to sequence ----
+        # Prepare input for RNN: [B, T', C, F'] → [B, T', C*F']
         x = x.permute(0, 3, 1, 2).contiguous()  # [B, T', C, F']
-        x = x.view(B, x.size(1), -1)  # [B, T', C * F']
+        x = x.view(B, x.size(1), -1)            # [B, T', C*F']
 
-        # ---- pack sequence ----
-        packed_x = pack_padded_sequence(x, lengths.cpu(), batch_first=True, enforce_sorted=False)
+        lengths = torch.clamp(lengths, max=x.size(1), min=1)
 
-        # ---- RNN ----
-        packed_out, (h_n, _) = self.rnn(packed_x)
+        # Debug: check for NaN/inf
+        if torch.isnan(x).any() or torch.isinf(x).any():
+            raise ValueError("Input to LSTM contains NaN or inf")
 
+        # Pack and send through RNN
+        packed = pack_padded_sequence(x, lengths.cpu(), batch_first=True, enforce_sorted=False)
+
+        packed_out, (h_n, _) = self.rnn(packed)
+
+        # Get final hidden state(s)
         if self.rnn.bidirectional:
-            h_fw = h_n[-2]  # [B, hidden]
-            h_bw = h_n[-1]
+            h_fw = h_n[-2]  # forward
+            h_bw = h_n[-1]  # backward
             h_last = torch.cat([h_fw, h_bw], dim=1)  # [B, hidden*2]
         else:
             h_last = h_n[-1]  # [B, hidden]

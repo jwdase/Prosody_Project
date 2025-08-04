@@ -48,7 +48,7 @@ def main(languages, audio_process, new_location):
 
 
 if __name__ == '__main__':
-    languages = ["ta", "ja"]
+    languages = ["en", "it", "es", "de", "nl", "ta", "ja"]
 
     location = "/om2/user/moshepol/prosody/data/low_pass_data"
 

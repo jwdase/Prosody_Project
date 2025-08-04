@@ -43,6 +43,9 @@ def lang_use_script(lang, dataset, base, process):
             'spec' : specs,
             'length' : (batch_lengths - process["n_fft"]) // process['hop_length'] + 1
         }
+        if any(files['length'] > 297):
+            for file in files['length']:
+                print(file)
 
         save_spect(files, base, len(specs), i)
         i += 1

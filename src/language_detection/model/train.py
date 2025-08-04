@@ -6,7 +6,7 @@ def train_loop(model, train_loader, val_loader, base):
     """
     Sets up complete training loop
     """
-
+    
     # ----------------------------- Defines All parameters
 
     model.to(config.DEVICE)
@@ -29,15 +29,18 @@ def train_loop(model, train_loader, val_loader, base):
         running_loss = 0.0
         total_train = 0
 
-        for inputs, labels in train_loader:
+        for inputs, lengths, labels in train_loader:
+
             inputs = inputs.to(config.DEVICE)
+            lengths = lengths.to(config.DEVICE)
             labels = labels.to(config.DEVICE)
+
 
             # Shape [64, 1025, 172] --> [64, 1, 1025, 172]
             inputs = inputs.unsqueeze(1)
 
             # Forward Pass
-            outputs = model(inputs)
+            outputs = model(inputs, lengths)
             loss = criterion(outputs, labels)
 
             # Backprop + Optimizer
@@ -59,14 +62,17 @@ def train_loop(model, train_loader, val_loader, base):
         total_val = 0
 
         with torch.no_grad():
-            for inputs, labels in val_loader:
+            for inputs, lengths, labels in train_loader:
+
                 inputs = inputs.to(config.DEVICE)
+                lengths = lengths.to(config.DEVICE)
                 labels = labels.to(config.DEVICE)
 
+                # Shape [64, 1025, 172] --> [64, 1, 1025, 172]
                 inputs = inputs.unsqueeze(1)
 
                 # Calculates models predictions
-                outputs = model(inputs)
+                outputs = model(inputs, lengths)
                 loss = criterion(outputs, labels)
 
                 # Solves loss
@@ -88,7 +94,7 @@ def train_loop(model, train_loader, val_loader, base):
 
         scheduler.step(running_val_loss)
 
-        if i % 5 == 0:
+        if i % 2 == 0:
             print(f"Epoch [{i+1}/{config.NUM_EPOCHS}]")
             print(f"  Train loss:      {total_loss[-1]:.4f}")
             print(f"  Validation loss: {validation_loss[-1]:.4f}")

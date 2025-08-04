@@ -4,7 +4,7 @@ import torch
 DEVICE = "cuda"
 
 # Data Loaders
-BATCH_SIZE = 256
+BATCH_SIZE = 64
 NUM_WORKERS = 4
 
 # Training
