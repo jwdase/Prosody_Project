@@ -8,7 +8,7 @@ from language_detection.model.encoder import generate_encoder, save_encoder, Cus
 from language_detection.model.loader import load_tensors
 from language_detection.model.network import VarCNNRNNLanguageDetector
 from language_detection.model.train import train_loop
-from language_detection.model.evaluate import plot_loss
+from language_detection.model.evaluate import plot_loss, plot_lr
 
 def main(languages, mod, data_location, new_location):
     """

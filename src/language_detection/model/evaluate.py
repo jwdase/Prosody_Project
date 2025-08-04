@@ -5,8 +5,10 @@ def plot_loss(total_loss, validation_loss, base):
     """
     Plots Loss over time
     """
+
     x = range(len(total_loss))
 
+    plt.figure()
     plt.plot(x, total_loss, label="Train Loss", color="blue")
     plt.plot(x, validation_loss, label="Validation Loss", color="orange")
 
@@ -16,6 +18,7 @@ def plot_loss(total_loss, validation_loss, base):
     plt.legend()
     plt.grid(True)
     plt.savefig(f"{base}/loss_graph.png")
+    plt.close()
 
 def plot_lr(lr, base):
     """
@@ -23,6 +26,7 @@ def plot_lr(lr, base):
     """
     x = range(len(lr))
 
+    plt.figure()
     plt.plot(x, lr)
 
     plt.xlabel("Epoch")
@@ -30,3 +34,4 @@ def plot_lr(lr, base):
     plt.title("Epoch vs. Loss")
     plt.grid(True)
     plt.savefig(f'{base}/lr_graph.png')
+    plt.close()

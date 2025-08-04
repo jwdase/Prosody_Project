@@ -8,8 +8,9 @@ BATCH_SIZE = 64
 NUM_WORKERS = 4
 
 # Training
-NUM_EPOCHS = 25
-LR = 1e-4
+NUM_EPOCHS = 100
+LR = 25e-6
+DECAY = 1e-5
 
 # Scheduler
 PATIENCE = 2

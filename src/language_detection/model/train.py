@@ -11,7 +11,7 @@ def train_loop(model, train_loader, val_loader, base):
 
     model.to(config.DEVICE)
     criterion = nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(model.parameters(), config.LR)
+    optimizer = torch.optim.Adam(model.parameters(), config.LR, weight_decay=config.DECAY)
 
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
         optimizer, 

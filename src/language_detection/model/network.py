@@ -181,18 +181,18 @@ class VarCNNRNNLanguageDetector(nn.Module):
         self,
         num_classes: int,
         input_shape: tuple[int, int],  # (freq_bins, time_steps)
-        rnn_hidden: int = 128,
-        rnn_layers: int = 2,
+        rnn_hidden: int = 64,
+        rnn_layers: int = 1,
         bidirectional: bool = True,
         dropout: float = 0.3
     ):
         super().__init__()
 
         # CNN feature extractor
-        self.conv1 = nn.Conv2d(1, 16, kernel_size=3, padding=1)
-        self.bn1   = nn.BatchNorm2d(16)
-        self.conv2 = nn.Conv2d(16, 32, kernel_size=3, padding=1)
-        self.bn2   = nn.BatchNorm2d(32)
+        self.conv1 = nn.Conv2d(1, 8, kernel_size=3, padding=1)
+        self.bn1   = nn.BatchNorm2d(8)
+        self.conv2 = nn.Conv2d(8, 16, kernel_size=3, padding=1)
+        self.bn2   = nn.BatchNorm2d(16)
         self.relu  = nn.ReLU()
         self.pool  = nn.MaxPool2d(2)
         self.dropout = nn.Dropout(dropout)
@@ -214,7 +214,7 @@ class VarCNNRNNLanguageDetector(nn.Module):
             num_layers  = rnn_layers,
             batch_first = True,
             bidirectional = bidirectional,
-            dropout = 0.0
+            dropout = dropout
         )
 
         rnn_directions = 2 if bidirectional else 1
@@ -233,8 +233,8 @@ class VarCNNRNNLanguageDetector(nn.Module):
         B = x.size(0)
 
         # CNN feature extraction
-        x = self.pool(self.relu(self.bn1(self.conv1(x))))
-        x = self.pool(self.relu(self.bn2(self.conv2(x))))
+        x = self.dropout(self.pool(self.relu(self.bn1(self.conv1(x)))))
+        x = self.dropout(self.pool(self.relu(self.bn2(self.conv2(x)))))
         # x shape: [B, C, Fp, Tp]
 
         # Adjust lengths for CNN pooling (2x MaxPool2d(2) → total downsample by 4)
