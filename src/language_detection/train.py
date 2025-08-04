@@ -46,9 +46,9 @@ def main(languages, mod, data_location, new_location):
     print('Done')
 
 if __name__ == '__main__':
-    language = ["en", "it", "es", "de", "nl", "ta", "ja"]
+    language = ["en", "de", "nl", "es", "it", "ja", "ta"]
 
     origin = '/om2/user/moshepol/prosody/data/low_pass_data'
-    base = '/om2/user/moshepol/prosody/models/test/no_prosody/'
+    base = '/om2/user/moshepol/prosody/models/test/prosody/'
 
     main(language, VarCNNRNNLanguageDetector, origin, base)

@@ -62,8 +62,7 @@ def train_loop(model, train_loader, val_loader, base):
         total_val = 0
 
         with torch.no_grad():
-            for inputs, lengths, labels in train_loader:
-
+            for inputs, labels in val_loader:
                 inputs = inputs.to(config.DEVICE)
                 lengths = lengths.to(config.DEVICE)
                 labels = labels.to(config.DEVICE)

@@ -1,6 +1,8 @@
 # Large raw data
 data/                  # everything under data/
 notebooks/models       # Removes all the models I made
+__pycache__/
+
 
 # Model checkpoints & other binary weights
 *.pth                 # PyTorch
@@ -11,3 +13,4 @@ notebooks/models       # Removes all the models I made
 *.tsv
 *.mp3
 *.wav
+*.pyc
