@@ -5,7 +5,7 @@ on spectrograms which must be first created in the make_spect file
 
 from language_detection.utils.io import grab_device, check_path, save_test, save_model
 from language_detection.model.encoder import generate_encoder, save_encoder, CustomLabelEncoder
-from language_detection.data.train.loader import load_tensors
+from language_detection.model.loader import load_tensors
 from language_detection.model.network import VarCNNRNNLanguageDetector
 from language_detection.model.train import train_loop
 from language_detection.model.evaluate import plot_loss
@@ -31,7 +31,7 @@ def main(languages, mod, data_location, new_location):
     model = mod(len(languages), shape)
 
     # Trains the Model
-    total_loss, val_loss = train_loop(
+    total_loss, val_loss, lr_plot = train_loop(
         model,
         train,
         val,
@@ -40,6 +40,7 @@ def main(languages, mod, data_location, new_location):
 
     # Saving Model + Statistics on Training
     plot_loss(total_loss, val_loss, new_location)
+    plot_lr(lr_plot, new_location)
     save_encoder(encoder, new_location)
     save_test(test, new_location)
 

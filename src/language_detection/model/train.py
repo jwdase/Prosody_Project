@@ -14,7 +14,11 @@ def train_loop(model, train_loader, val_loader, base):
     optimizer = torch.optim.Adam(model.parameters(), config.LR)
 
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
-        optimizer, mode="min", patience=config.PATIENCE, factor=config.FACTOR, threshold=config.THRESHOLD
+        optimizer, 
+        mode="min", 
+        patience=config.PATIENCE, 
+        factor=config.FACTOR, 
+        threshold=config.THRESHOLD, 
     )
 
     # ----------------------------- Training Begins Below
@@ -22,6 +26,7 @@ def train_loop(model, train_loader, val_loader, base):
     total_loss = []
     validation_loss = []
     validation_accuracy = []
+    learning_rate = []
     best_acc = 0.0
 
     for i in range(config.NUM_EPOCHS):
@@ -62,7 +67,7 @@ def train_loop(model, train_loader, val_loader, base):
         total_val = 0
 
         with torch.no_grad():
-            for inputs, labels in val_loader:
+            for inputs, lengths, labels in val_loader:
                 inputs = inputs.to(config.DEVICE)
                 lengths = lengths.to(config.DEVICE)
                 labels = labels.to(config.DEVICE)
@@ -84,14 +89,16 @@ def train_loop(model, train_loader, val_loader, base):
                 # Tracks total number of values in validation
                 total_val += labels.size(0)
 
+        scheduler.step(running_val_loss)
+
         validation_loss.append(running_val_loss / total_val)
         validation_accuracy.append(correct / total_val)
+        learning_rate.append(scheduler.get_last_lr())
 
-        if validation_accuracy[-1] > best_acc:
+        if validation_accuracy[-1] > best_acc + config.ERROR:
             best_acc = validation_accuracy[-1]
             torch.save(model.state_dict(), f"{base}/best_model.pth")
 
-        scheduler.step(running_val_loss)
 
         if i % 2 == 0:
             print(f"Epoch [{i+1}/{config.NUM_EPOCHS}]")
@@ -102,4 +109,4 @@ def train_loop(model, train_loader, val_loader, base):
     # Deletes for cleanup
     del optimizer, scheduler
 
-    return total_loss, validation_loss
+    return total_loss, validation_loss, learning_rate

@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import numpy as np
 
 def plot_loss(total_loss, validation_loss, base):
     """
@@ -15,3 +16,17 @@ def plot_loss(total_loss, validation_loss, base):
     plt.legend()
     plt.grid(True)
     plt.savefig(f"{base}/loss_graph.png")
+
+def plot_lr(lr, base):
+    """
+    Plots the learning rate over time
+    """
+    x = range(len(lr))
+
+    plt.plot(x, lr)
+
+    plt.xlabel("Epoch")
+    plt.ylabel("Loss")
+    plt.title("Epoch vs. Loss")
+    plt.grid(True)
+    plt.savefig(f'{base}/lr_graph.png')
