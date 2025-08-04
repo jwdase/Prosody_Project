@@ -8,8 +8,9 @@ def save_test(test_loader, base):
     """
     Saves the test data for data validation later
     """
-    for i, (inputs, outputs) in enumerate(test_loader):
+    for i, (inputs, lengths, outputs) in enumerate(test_loader):
         torch.save(inputs, f"{base}/inputs_{i}.pt")
+        torch.save(lengths, f"{base}/lengths_{i}.pt")
         torch.save(outputs, f"{base}/outputs_{i}.pt")
 
 def check_path(base):

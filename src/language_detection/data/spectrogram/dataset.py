@@ -30,14 +30,14 @@ class AudioFileDataset(Dataset):
                 self.samplers[sr] = torchaudio.transforms.Resample(sr, self.target_sr)
 
             waveform = self.samplers[sr](waveform)
+            original_length = waveform.shape[-1]
 
-        return self.pad_waveform(waveform), original_length
+        return self.pad_waveform(waveform), min(original_length, self.length)
 
     def pad_waveform(self, waveform):
         length = waveform.shape[-1]
 
         if length > self.length:
-            print('Clipped')
             waveform = waveform[..., :self.length]
             length = self.length 
             

@@ -27,8 +27,6 @@ def main(languages, mod, data_location, new_location):
         encoder
     )
 
-    return None
-
     # Create the model
     model = mod(len(languages), shape)
 
@@ -48,10 +46,9 @@ def main(languages, mod, data_location, new_location):
     print('Done')
 
 if __name__ == '__main__':
-    language = ["ja", "ta"]
-    window = "range_5_5-6_0"
+    language = ["en", "de", "nl", "es", "it", "ja", "ta"]
 
     origin = '/om2/user/moshepol/prosody/data/low_pass_data'
-    base = '/om2/user/moshepol/prosody/models/test/no_prosody/'
+    base = '/om2/user/moshepol/prosody/models/test/prosody/'
 
     main(language, VarCNNRNNLanguageDetector, origin, base)

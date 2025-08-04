@@ -29,15 +29,17 @@ def train_loop(model, train_loader, val_loader, base):
         running_loss = 0.0
         total_train = 0
 
-        for inputs, labels in train_loader:
+        for inputs, lengths, labels in train_loader:
+
             inputs = inputs.to(config.DEVICE)
+            lengths = lengths.to(config.DEVICE)
             labels = labels.to(config.DEVICE)
 
             # Shape [64, 1025, 172] --> [64, 1, 1025, 172]
             inputs = inputs.unsqueeze(1)
 
             # Forward Pass
-            outputs = model(inputs)
+            outputs = model(inputs, lengths)
             loss = criterion(outputs, labels)
 
             # Backprop + Optimizer
@@ -59,14 +61,15 @@ def train_loop(model, train_loader, val_loader, base):
         total_val = 0
 
         with torch.no_grad():
-            for inputs, labels in val_loader:
+            for inputs, lengths, labels in val_loader:
                 inputs = inputs.to(config.DEVICE)
+                lengths = lengths.to(config.DEVICE)
                 labels = labels.to(config.DEVICE)
 
                 inputs = inputs.unsqueeze(1)
 
                 # Calculates models predictions
-                outputs = model(inputs)
+                outputs = model(inputs, lengths)
                 loss = criterion(outputs, labels)
 
                 # Solves loss
