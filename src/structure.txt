@@ -1,0 +1,29 @@
+.
+├── language_detection
+│   ├── config.py
+│   ├── data
+│   ├── __init__.py
+│   ├── model
+│   ├── __pycache__
+│   ├── spect.py
+│   ├── train.py
+│   └── utils
+├── notebooks
+│   └── play
+├── plots
+│   ├── dataset_distribution.ipynb
+│   ├── distributions.ipynb
+│   ├── figures
+│   ├── freq_time.ipynb
+│   ├── models
+│   ├── review_model.ipynb
+│   ├── speakers.ipynb
+│   ├── training_distribution.ipynb
+│   └── unique_speakers.ipynb
+├── scripts
+│   ├── language.py
+│   ├── lengths.py
+│   └── prosody.py
+└── structure.txt
+
+11 directories, 15 files

@@ -15,6 +15,8 @@ LR = 1e-4
 PATIENCE = 2
 FACTOR = .5
 THRESHOLD = 1e-4
+
+# Saving model
 ERROR = .005
 
 # Number of Unique Speakers
