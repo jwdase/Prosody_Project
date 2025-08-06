@@ -11,7 +11,7 @@ def train_loop(model, train_loader, val_loader, base):
 
     model.to(config.DEVICE)
     criterion = nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(model.parameters(), config.LR, weight_decay=config.DECAY)
+    optimizer = torch.optim.Adam(model.parameters(), config.LR)
 
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
         optimizer, 
@@ -35,6 +35,7 @@ def train_loop(model, train_loader, val_loader, base):
         total_train = 0
 
         for inputs, lengths, labels in train_loader:
+
 
             inputs = inputs.to(config.DEVICE)
             lengths = lengths.to(config.DEVICE)
@@ -96,6 +97,7 @@ def train_loop(model, train_loader, val_loader, base):
         learning_rate.append(scheduler.get_last_lr())
 
         if validation_accuracy[-1] > best_acc + config.ERROR:
+            print(f'Saved Model on: {i}')
             best_acc = validation_accuracy[-1]
             torch.save(model.state_dict(), f"{base}/best_model.pth")
 

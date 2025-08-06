@@ -20,7 +20,9 @@ def main(languages, audio_process, new_location):
     """
 
     # Loads dataset by partition
-    dataset, speakers = create_dataset(languages)
+    dataset, speakers, maximum = create_dataset(languages)
+
+    check_path(new_location)
 
     # Saves the 2 files
     with open(f'{new_location}/dataset.pkl', 'wb') as f:
@@ -28,6 +30,9 @@ def main(languages, audio_process, new_location):
 
     with open(f'{new_location}/speakers.pkl', 'wb') as f:
         pickle.dump(speakers, f)
+
+    with open(f'{new_location}/lengths.pkl', 'wb') as f:
+        pickle.dump(maximum, f)
 
     # Cleans array
     dataset = group_by_lang(dataset)
@@ -48,7 +53,7 @@ def main(languages, audio_process, new_location):
 
 
 if __name__ == '__main__':
-    languages = ["en", "it", "es", "de", "nl", "ta", "ja"]
+    languages = ["en", "it", "es", "de", "nl", "ta", "ja", "tr", "uz"]
 
     location = "/om2/user/moshepol/prosody/data/low_pass_data"
 

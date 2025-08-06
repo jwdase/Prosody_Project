@@ -324,7 +324,7 @@ def create_dataset(languages):
 
         print(f'Finished: {lang}')
 
-    return dataset, speakers
+    return dataset, speakers, maximum
 
 if __name__ == "__main__":
     lang = ["ta", "en", "es", "ja", "it", "de", "nl"]
