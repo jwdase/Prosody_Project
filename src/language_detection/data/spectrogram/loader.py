@@ -329,10 +329,13 @@ def create_dataset(languages):
 if __name__ == "__main__":
     lang = ["ta", "en", "es", "ja", "it", "de", "nl"]
     
-    x, y = create_dataset(lang)
+    x, y, total = create_dataset(lang)
 
-    with open('notebooks/play/files.pkl', 'wb') as f:
+    with open('src/notebooks/play/files.pkl', 'wb') as f:
         pickle.dump(x, f)
 
-    with open('notebooks/play/speak.pkl', 'wb') as f:
+    with open('src/notebooks/play/speak.pkl', 'wb') as f:
         pickle.dump(y, f)
+
+    with open('src/notebooks/play/shape.pkl', 'wb') as f:
+        pickle.dump(total, f)

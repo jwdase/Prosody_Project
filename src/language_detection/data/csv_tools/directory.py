@@ -1,13 +1,15 @@
 import pandas as pd
 from pathlib import Path
 
+from language_detection import config
+
 def open_files(language, size = None):
     '''
     Opens file that contains all the 
     paths to files, also includes speaker id
     '''
 
-    root = '/om2/user/moshepol/prosody/data/raw_audio'
+    root = config.AUDIO_LOCATION
      
     path = (f'{root}/{language}/validated.tsv')
     dataframe = pd.read_csv(path, sep = '\t', low_memory = False)[['client_id', 'path']]

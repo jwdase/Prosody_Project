@@ -29,7 +29,7 @@ WORKERS = 1
 WINDOW = torch.hann_window
 
 # Audio Location
-AUDIO_LOCATION = '/om2/user/moshepol/prosody/data/raw_audio'
+AUDIO_LOCATION = '/nese/mit/group/evlab/u/moshepol/om2/prosody/data/raw_audio'
 
 # Low Pass Filter, Location to save Audio
 CUTOFF = 300
