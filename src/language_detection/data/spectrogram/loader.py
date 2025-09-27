@@ -5,6 +5,7 @@ audio files for creating our spectrograms
 
 import pickle
 import random
+from glob import glob
 
 from language_detection.data.csv_tools.read import (
     load_df,
@@ -285,7 +286,6 @@ def generate_max_dtype(files):
 
     return x
             
-
 #############  -----------------------  ################
 
 
@@ -326,16 +326,53 @@ def create_dataset(languages):
 
     return dataset, speakers, maximum
 
+def load_from_directory():
+    """
+    Takes in a directory with structure dir/{lang}/{test}
+
+    and returns an dict of type {'lang' : {'type : []}}
+    """
+
+    root = config.AUDIO_LOCATION
+
+    # Get list of languages
+    languages = [val.replace(f'{root}/', '') for val in glob(f'/{root}/*')]
+
+    # Assumping that there are {train, test, val} partitions
+    types = ['train', 'test', 'val']
+
+    dataset = {}
+
+    for lang in languages:
+
+        sub_dict = {}
+        for dtype in types:
+            
+            # gather files
+            lookup = f'{root}{lang}/{dtype}/*'
+
+            sub_dict[dtype] = glob(lookup)
+
+            print(f"{lang.replace('/', '')} : {dtype} has length {len(sub_dict[dtype])}")
+
+        dataset[lang] = sub_dict
+
+    return dataset
+
 if __name__ == "__main__":
-    lang = ["ta", "en", "es", "ja", "it", "de", "nl"]
+    # lang = ["ta", "en", "es", "ja", "it", "de", "nl"]
     
-    x, y, total = create_dataset(lang)
+    # x, y, total = create_dataset(lang)
 
-    with open('src/notebooks/play/files.pkl', 'wb') as f:
-        pickle.dump(x, f)
+    # with open('src/notebooks/play/files.pkl', 'wb') as f:
+    #     pickle.dump(x, f)
 
-    with open('src/notebooks/play/speak.pkl', 'wb') as f:
-        pickle.dump(y, f)
+    # with open('src/notebooks/play/speak.pkl', 'wb') as f:
+    #     pickle.dump(y, f)
 
-    with open('src/notebooks/play/shape.pkl', 'wb') as f:
-        pickle.dump(total, f)
+    # with open('src/notebooks/play/shape.pkl', 'wb') as f:
+    #     pickle.dump(total, f)
+
+    root = '/om2/user/jwdase/prosody/prosody_only'
+
+    load_from_directory()

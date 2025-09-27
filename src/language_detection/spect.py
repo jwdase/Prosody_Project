@@ -6,7 +6,7 @@ import pickle
 
 import torch
 
-from language_detection.data.spectrogram.loader import create_dataset
+from language_detection.data.spectrogram.loader import create_dataset, load_from_directory
 from language_detection.data.spectrogram.compute import make_spect
 from language_detection.data.spectrogram.functions import compute_spectrogram_batch, compute_lowpass_spectrogram_batch
 from language_detection.data.spectrogram.tools import group_by_lang
@@ -37,8 +37,19 @@ def main(languages, audio_process, new_location):
     # Cleans array
     dataset = group_by_lang(dataset)
 
+    generate_spect(dataset, audio_process, new_location)
+
+    return
+
+
+def generate_spect(dataset, audio_process, new_location):
+    """
+    Code to run the spectrogram creation from the dataset
+    """
+
     for lang, dataset in dataset.items():
         print(f'Starting Spectrogram: {lang}')
+
         for use, data in dataset.items():
 
             # Cleans and then writes to directory
@@ -50,6 +61,23 @@ def main(languages, audio_process, new_location):
             print(f"Finished: {use} w/ {len(data)} samples")
 
         print(f"Finsihed: {lang}")
+
+def run_on_preprocess(dataset, audio_process, new_location):
+    """
+    Code for creating spectrogram from already made datatset
+
+    Need to specify directory you want to read from in config file
+    """
+
+    # Clears new location
+    check_path(new_location)
+
+
+    dataset = load_from_directory()
+
+    generate_spect(dataset, audio_process, new_location)
+
+
 
 
 if __name__ == '__main__':
