@@ -27,7 +27,7 @@ def train_loop(model, train_loader, val_loader, base):
     validation_loss = []
     validation_accuracy = []
     learning_rate = []
-    best_acc = 0.0
+    best_val = 0.0
 
     for i in range(config.NUM_EPOCHS):
         model.train()
@@ -35,8 +35,6 @@ def train_loop(model, train_loader, val_loader, base):
         total_train = 0
 
         for inputs, lengths, labels in train_loader:
-
-
             inputs = inputs.to(config.DEVICE)
             lengths = lengths.to(config.DEVICE)
             labels = labels.to(config.DEVICE)
@@ -69,6 +67,7 @@ def train_loop(model, train_loader, val_loader, base):
 
         with torch.no_grad():
             for inputs, lengths, labels in val_loader:
+
                 inputs = inputs.to(config.DEVICE)
                 lengths = lengths.to(config.DEVICE)
                 labels = labels.to(config.DEVICE)
@@ -96,9 +95,9 @@ def train_loop(model, train_loader, val_loader, base):
         validation_accuracy.append(correct / total_val)
         learning_rate.append(scheduler.get_last_lr())
 
-        if validation_accuracy[-1] > best_acc + config.ERROR:
+        if validation_loss[-1] > validation_loss + config.ERROR:
             print(f'Saved Model on: {i}')
-            best_acc = validation_accuracy[-1]
+            best_val = validation_loss[-1]
             torch.save(model.state_dict(), f"{base}/best_model.pth")
 
 

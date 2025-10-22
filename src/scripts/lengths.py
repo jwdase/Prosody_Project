@@ -35,6 +35,9 @@ def main(lang):
     print('Done')
 
 if __name__ == '__main__':
-    for val in ["uz", "tr"]:
+
+    languages = ["uz", "tr"] 
+
+    for val in languages:
         main(val)
 

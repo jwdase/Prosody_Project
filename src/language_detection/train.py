@@ -17,6 +17,7 @@ def main(languages, mod, data_location, new_location):
 
     # Checks using CUDA and clears directory to save files
     grab_device()
+
     check_path(new_location)
 
     # Load tensors and encoders
@@ -47,9 +48,9 @@ def main(languages, mod, data_location, new_location):
     print('Done')
 
 if __name__ == '__main__':
-    language = ["en", "de", "nl", "es", "it", "ja", "ta", "tr", "uz"]
+    language = ["en", "de", "nl", "es", "it", "ja", "ta",]
 
-    origin = '/om2/user/moshepol/prosody/data/low_pass_data'
-    base = '/om2/user/moshepol/prosody/models/test/prosody_epoch_20_tr/'
+    origin = '/om2/user/jwdase/prosody/prosody_only_spect/'
+    base = '/om2/user/jwdase/prosody/models/test/prosody_epoch_20_tr/'
 
     main(language, VarCNNTransformerLanguageDetector, origin, base)

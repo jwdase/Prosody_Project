@@ -353,28 +353,27 @@ class VarCNNTransformerLanguageDetector(nn.Module):
 
         # No pooling
 
-        # Compute flattened size after CNN
-        freq_bins, _ = input_shape
-        self.flattened_dim = 32 * freq_bins  # no pooling, 32 channels
+        # after the CNN
+        self.proj = nn.Linear(32 * input_shape[0], 512)  # or 256 if you want it even smaller
+        self.pos_encoder = PositionalEncoding(512)
 
-        # Transformer encoder
-        self.pos_encoder = PositionalEncoding(self.flattened_dim)
         encoder_layer = nn.TransformerEncoderLayer(
-            d_model=self.flattened_dim,
-            nhead=nhead,
-            dim_feedforward=dim_feedforward,
+            d_model=512,
+            nhead=8,                 # nhead must divide d_model
+            dim_feedforward=1024,
             dropout=dropout,
             batch_first=True
         )
-        self.transformer = nn.TransformerEncoder(encoder_layer, num_layers=num_layers)
+        
+        self.transformer = nn.TransformerEncoder(encoder_layer, num_layers=2)
 
-        # Final classifier
         self.classifier = nn.Sequential(
-            nn.Linear(self.flattened_dim, self.flattened_dim),
+            nn.Linear(512, 256),
             nn.ReLU(),
             nn.Dropout(dropout),
-            nn.Linear(self.flattened_dim, num_classes)
+            nn.Linear(256, num_classes)
         )
+
 
     def forward(self, x: torch.Tensor, lengths: torch.Tensor) -> torch.Tensor:
         """
@@ -390,7 +389,8 @@ class VarCNNTransformerLanguageDetector(nn.Module):
 
         # Prepare for transformer: [B, 32, F, T] → [B, T, 32*F]
         x = x.permute(0, 3, 1, 2).contiguous()  # [B, T, C, F]
-        x = x.view(B, x.size(1), -1)            # [B, T, D]
+        x = x.view(B, x.size(1), -1)            # [B, T, 32*F]
+        x = self.proj(x)                        # [B, T, 512]
 
         # Adjust lengths (no pooling used here, but keep if you add one)
         # If MaxPool2d(2) was used twice, you'd do: lengths = lengths // 4
