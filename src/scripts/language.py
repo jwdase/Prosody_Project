@@ -17,8 +17,5 @@ if __name__ == '__main__':
         "spect_f" : compute_spectrogram_batch,
     }
 
-    # Make Spectrogram
-    main_spect(languages, entry, origin)
-
     # Train Model
     main_train(languages, VarCNNTransformerLanguageDetector, origin, save)

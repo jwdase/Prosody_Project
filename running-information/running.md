@@ -51,6 +51,7 @@ This guide explains how to run the **complete prosody extraction pipeline**, fro
 > Write audio location in config file so scripts knows where audio is
 
 1. Go into `config.py` and under `AUDIO_LOCATION` place the root of the matlab processed audio files.
+1. Go into `config.py` and under `MODEL_LOCATION` specift the directory you want to save spectrograms and all audio files into
 
 ---
 

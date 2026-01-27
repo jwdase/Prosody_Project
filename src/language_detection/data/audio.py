@@ -3,11 +3,14 @@ from mutagen.mp3 import HeaderNotFoundError, MutagenError
 import random
 from pathlib import Path
 
+from language_detection import config
+
 def get_length(path):
     '''
     Attemps to get length of audio
     if path is not there, ignores
     '''
+    
     try:
         audio = File(path)
         return audio.info.length
@@ -15,23 +18,6 @@ def get_length(path):
         # Signal path is not valid
         return None
 
-
-def ending_determinter(path):
-    '''
-    Takes a path and determines if audio files end in a .wav
-    or a .mp3 and then uses that to figure out which to used
-    '''
-
-    last_element = path.split('/')[-1]
-
-    if any(ext in last_element for ext in ['.wav', '.mp3']):
-        return ''
-
-    try:
-        audio = File(path + '.mp3')
-        return '.mp3'
-    except MutagenError as e:
-        return '.wav'
 
     
 def language_path_builder(df, language):
@@ -41,12 +27,11 @@ def language_path_builder(df, language):
     correct one
     '''
 
-    root = '/om2/user/moshepol/prosody/data/raw_audio'
-    path = f'{root}/{language}/clips/'
+    path = f'{config.AUDIO_LOCATION}/{language}/clips/'
 
-    ending = ending_determinter(path + list(df['path'])[0])
+    ending = '.wav'
 
-    return (path + file + ending for file in df['path'])
+    return (path + file.replace('.mp3', '.wav') for file in df['path'])
 
 
 def valid_paths(df, length, delta, language):

@@ -9,4 +9,4 @@ if __name__ == "__main__":
     origin = '/om2/user/jwdase/prosody/prosody_only_spect/'
     base = '/om2/user/jwdase/prosody/models/test/prosody_epoch_20_tr/'
 
-    main(language, VarCNNTransformerLanguageDetector, origin, base)
+    main(language, VarCNNTransformerLanguageDetector, name='Model1')

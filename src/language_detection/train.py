@@ -10,15 +10,17 @@ from language_detection.model.network import VarCNNRNNLanguageDetector, VarCNNRN
 from language_detection.model.train import train_loop
 from language_detection.model.evaluate import plot_loss, plot_lr
 
-def main(languages, mod, data_location, new_location):
+def main(languages, mod, name):
     """
     Main training loop
     """
 
+    # Get locations for data
+    data_location = config.AUDIO_LOCATION
+    model_location = f"{config.MODEL_LOCATION}/name"
+
     # Checks using CUDA and clears directory to save files
     grab_device()
-
-    check_path(new_location)
 
     # Load tensors and encoders
     encoder = CustomLabelEncoder(languages)
@@ -50,7 +52,4 @@ def main(languages, mod, data_location, new_location):
 if __name__ == '__main__':
     language = ["en", "de", "nl", "es", "it", "ja", "ta",]
 
-    origin = '/om2/user/jwdase/prosody/prosody_only_spect/'
-    base = '/om2/user/jwdase/prosody/models/test/prosody_epoch_20_tr/'
-
-    main(language, VarCNNTransformerLanguageDetector, origin, base)
+    main(language, VarCNNTransformerLanguageDetector)

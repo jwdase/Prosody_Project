@@ -1,3 +1,8 @@
+"""
+Code to generate pandas df for the length of each audio file
+and how to select them
+"""
+
 import pandas as pd
 
 from language_detection.data.csv_tools.directory import (
@@ -7,6 +12,7 @@ from language_detection.data.csv_tools.directory import (
 
 from language_detection.data.audio import df_values
 from language_detection.utils.io import check_path
+from language_detection.config import AUDIO_LOCATION
 
 def main(lang):
     """
@@ -14,6 +20,8 @@ def main(lang):
     """
 
     files = person_to_group(open_files(lang))
+
+    location = f"{AUDIO_LOCATION}/{lang}/custom"
 
     name, person_data = files.popitem()
 
@@ -28,7 +36,6 @@ def main(lang):
             df_values(urls, lang)
         )
 
-    location = f'/om2/user/moshepol/prosody/data/raw_audio/{lang}/custom'
     check_path(location)
     df.to_csv(location + '/length.csv')
 
@@ -36,8 +43,7 @@ def main(lang):
 
 if __name__ == '__main__':
 
-    languages = ["uz", "tr"] 
-
-    for val in languages:
-        main(val)
+    languages = ["ja"] 
+    
+    x = main(languages[0])
 

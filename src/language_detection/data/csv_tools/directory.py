@@ -29,8 +29,6 @@ def person_to_group(df):
     '''
     return dict(tuple(df.groupby('client_id', sort=False)))
 
-
-
 def make_single_string(name, maps):
     '''
     Takes a dictionary of lengths to URL's and joins URLs with hypthens

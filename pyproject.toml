@@ -2,33 +2,44 @@
 name = "langaugedetection"
 version = "0.1.0"
 description = ""
-authors = [
-    {name = "Jonathan Dase", email = "jwdase@mit.edu"}
-]
 readme = "README.md"
-requires-python = ">=3.10"
-
-[tool.poetry]
-packages = [{include = "langaugedetection", from = "src"}]
-
-[tool.poetry.dependencies]
-python = ">=3.10"
-joblib = "1.5.1"
-librosa = "0.11.0"
-matplotlib = "3.10.5"
-mutagen = "1.47.0"
-numpy = "2.3.2"
-pandas = "2.3.1"
-psutil = "5.9.1"
-scikit-learn = "1.7.1"
-torch = { version = "2.5.1+cu121", source = "pytorch" }
-torchaudio = { version = "2.5.1+cu121", source = "pytorch" }
-
-[[tool.poetry.source]]
-name = "pytorch"
-url = "https://download.pytorch.org/whl/cu121"
-default = false
+requires-python = ">=3.11"
+authors = [
+  { name = "Jonathan Dase", email = "jwdase@mit.edu" }
+]
+dependencies = [
+  "joblib==1.5.1",
+  "librosa==0.11.0",
+  "matplotlib==3.10.5",
+  "mutagen==1.47.0",
+  "numpy==2.3.2",
+  "pandas==2.3.1",
+  "psutil==5.9.1",
+  "scikit-learn==1.7.1",
+  "torch==2.5.1+cu121",
+  "torchaudio==2.5.1+cu121",
+]
 
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+# Tell setuptools you're using a src/ layout
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+# -----------------------------
+# uv: use PyPI for everything,
+# and PyTorch index ONLY for torch/torchaudio
+# -----------------------------
+[[tool.uv.index]]
+name = "pytorch"
+url = "https://download.pytorch.org/whl/cu121"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch" }
+torchaudio = { index = "pytorch" }
