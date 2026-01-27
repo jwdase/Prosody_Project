@@ -35,8 +35,6 @@ def main(languages, audio_process):
     with open(f'{config.MODEL_LOCATION}/statistics/lengths.pkl', 'wb') as f:
         pickle.dump(maximum, f)
 
-    return dataset, speakers, maximum
-
     # Cleans array
     dataset = group_by_lang(dataset)
     generate_spect(dataset, audio_process)
@@ -75,6 +73,4 @@ if __name__ == '__main__':
     sr = 16_000
 
     entry = {"sr": sr, "n_fft": n_ftt, "hop_length": hop_length, "spect_f" : compute_spectrogram_batch}
-
-    run_on_preprocess(languages, entry)
 

@@ -10,4 +10,4 @@ if __name__ == '__main__':
 
     entry = {"sr": sr, "n_fft": n_ftt, "hop_length": hop_length, "spect_f" : compute_spectrogram_batch}
 
-    dataset, speakers, maximum = main(languages, entry)
+    main(languages, entry)

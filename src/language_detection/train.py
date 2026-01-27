@@ -9,15 +9,17 @@ from language_detection.model.loader import load_tensors
 from language_detection.model.network import VarCNNRNNLanguageDetector, VarCNNRNNLanguageDetector2, VarCNNTransformerLanguageDetector
 from language_detection.model.train import train_loop
 from language_detection.model.evaluate import plot_loss, plot_lr
+from language_detection import config
 
 def main(languages, mod, name):
     """
     Main training loop
     """
 
-    # Get locations for data
-    data_location = config.AUDIO_LOCATION
-    model_location = f"{config.MODEL_LOCATION}/name"
+    # Get locations for data and save
+    model_location = f"{config.MODEL_LOCATION}/{name}"
+    check_path(model_location)
+
 
     # Checks using CUDA and clears directory to save files
     grab_device()
@@ -26,7 +28,6 @@ def main(languages, mod, name):
     encoder = CustomLabelEncoder(languages)
     train, test, val, shape = load_tensors(
         languages,
-        data_location,
         encoder
     )
 
@@ -38,18 +39,18 @@ def main(languages, mod, name):
         model,
         train,
         val,
-        new_location
+        model_location
     )
 
     # Saving Model + Statistics on Training
-    plot_loss(total_loss, val_loss, new_location)
-    plot_lr(lr_plot, new_location)
-    save_encoder(encoder, new_location)
-    save_test(test, new_location)
+    plot_loss(total_loss, val_loss, model_location)
+    plot_lr(lr_plot, model_location)
+    save_encoder(encoder, model_location)
+    save_test(test, model_location)
 
-    print('Done')
+    print(f'Data saved to: {model_location}')
 
 if __name__ == '__main__':
     language = ["en", "de", "nl", "es", "it", "ja", "ta",]
 
-    main(language, VarCNNTransformerLanguageDetector)
+    main(language, VarCNNTransformerLanguageDetector, name="None")

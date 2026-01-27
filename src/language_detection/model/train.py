@@ -95,10 +95,10 @@ def train_loop(model, train_loader, val_loader, base):
         validation_accuracy.append(correct / total_val)
         learning_rate.append(scheduler.get_last_lr())
 
-        if validation_loss[-1] > validation_loss + config.ERROR:
+        if len(validation_loss) > 3 and (validation_loss[-1] > validation_loss[-2] + config.ERROR):
             print(f'Saved Model on: {i}')
             best_val = validation_loss[-1]
-            torch.save(model.state_dict(), f"{base}/best_model.pth")
+            torch.save(model.state_dict(), f"{base}/best_model_{i}_{validation_loss[-1]}.pth")
 
 
         if i % 2 == 0:

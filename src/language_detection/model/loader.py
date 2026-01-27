@@ -7,7 +7,7 @@ from language_detection import config
 from language_detection.model.dataset import AudioDataset
 
 
-def load_audio(lang_list, orig, enc):
+def load_audio(lang_list, enc):
     """
     Loads the audio files from the directory specified below
     stores them as a dict
@@ -22,7 +22,7 @@ def load_audio(lang_list, orig, enc):
     for lang in lang_list:
         for dtype in data_types:
 
-            paths = glob.glob(f'{orig}/{lang}/spect/{dtype}/*.pt')
+            paths = glob.glob(f'{config.MODEL_LOCATION}/{lang}/spect/{dtype}/*.pt')
 
             for path in paths:
                 x = torch.load(path, weights_only=False)
@@ -70,6 +70,7 @@ def standize_data(dataset):
         # Print Results
         print(f"For datatype: {dtype}")
         data.print_stats()
+        print("---------")
 
 
 def print_length(dataset):
@@ -77,12 +78,12 @@ def print_length(dataset):
         print(f"{dtype}: has {len(data)} samples")
 
 
-def load_tensors(languages, data_location, enc):
+def load_tensors(languages, enc):
     """
     Loads the tensor data_loaders
     """
 
-    data = load_audio(languages, data_location, enc)
+    data = load_audio(languages, enc)
 
     standize_data(data)
 

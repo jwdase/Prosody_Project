@@ -8,7 +8,7 @@ BATCH_SIZE = 212
 NUM_WORKERS = 4
 
 # Training
-NUM_EPOCHS = 25
+NUM_EPOCHS = 3
 LR = 1e-4
 
 # Scheduler
@@ -34,7 +34,6 @@ MODEL_LOCATION = '/orcd/archive/evelina9/001/u/jwdase/Model'
 
 # Low Pass Filter, Location to save Audio
 CUTOFF = 300
-AUDIO_SAVED = "/om2/user/moshepol/prosody/data/low_pass"
 
 # Weights for Audio File Length
 WEIGHTS = {

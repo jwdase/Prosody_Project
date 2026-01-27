@@ -12,7 +12,7 @@ from language_detection.data.csv_tools.directory import (
 
 from language_detection.data.audio import df_values
 from language_detection.utils.io import check_path
-from language_detection.config import AUDIO_LOCATION
+from language_detection import config 
 
 def main(lang):
     """
@@ -21,7 +21,7 @@ def main(lang):
 
     files = person_to_group(open_files(lang))
 
-    location = f"{AUDIO_LOCATION}/{lang}/custom"
+    location = f"{config.AUDIO_LOCATION}/{lang}/custom"
 
     name, person_data = files.popitem()
 
@@ -43,7 +43,8 @@ def main(lang):
 
 if __name__ == '__main__':
 
-    languages = ["ja"] 
-    
-    x = main(languages[0])
+    languages = ["uz", "ja"] 
+
+    for lang in languages:
+        main(lang)
 
