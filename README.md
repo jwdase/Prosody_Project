@@ -3,7 +3,7 @@
 ## Importance
 
 **Simple Goal:** To classify languages based on prosodic features. \
-**Importance:** We understand how the languages of the world differ in syntax (SVO vs. SOV orders); phonology (which languages have similar phonemmes); however, we do not have a cmomplete understanding of how prosody differs language to language. This could be because prosody is not important or it could also be becuse we don't yet have the vocabulary to understand prosody. **The goal** of this research is to develop that vocablary.
+**Importance:** We understand how the languages of the world differ in syntax (SVO vs. SOV orders); phonology (which languages have similar phonemmes); however, we do not have a cmomplete understanding of how prosody differs language to language. Our lack of a prosody *tree* could be due to prosody not being of interest or becuse we don't yet have the vocabulary to understand prosody. **The goal** of this research is to develop that vocablary.
 
 ## Installations and Instructions
 
